@@ -1,0 +1,1433 @@
+@import "bootstrap-icons/font/bootstrap-icons.css";
+@import "tailwindcss";
+
+@theme {
+  
+  --color-primary: #3b82f6; 
+  
+
+  --color-secondary: #ef4444;
+}
+
+/* Ton CSS custom après */
+
+/*ADMIN*/
+
+/* Pour que le texte soit lisible mais ne casse pas la ligne */
+.data-truncate {
+    max-width: 250px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: inline-block;
+    vertical-align: middle;
+}
+
+/* Style de la notification de copie */
+#copy-toast {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: #3b82f6;
+    color: white;
+    padding: 12px 24px;
+    border-radius: 12px;
+    font-weight: bold;
+    font-size: 12px;
+    transform: translateY(100px);
+    transition: transform 0.3s ease;
+    z-index: 999;
+}
+
+.custom-scrollbar::-webkit-scrollbar { width: 4px; }
+.custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 10px; }
+
+/* Ajustement du titre pour mobile */
+@media (max-width: 768px) {
+  h1.title { 
+    font-size: 1.8rem; /* Réduire la taille */
+    padding-right: 60px; /* Laisser de la place au bouton menu */
+  }
+
+  /* Si ton menu est en 'absolute' ou 'fixed' */
+  .mobile-menu {
+    width: 100%; /* Prendre tout l'écran pour éviter le chevauchement bizarre */
+    background: rgba(15, 15, 26, 0.95); /* Fond opaque pour la lisibilité */
+  }
+}
+
+/*---------------------------------*/
+
+
+
+html {
+    scroll-behavior: smooth;
+    /* Très important : on ajoute un décalage pour que ton header fixe 
+       ne cache pas le titre "FAQ" quand on arrive dessus */
+    scroll-padding-top: 100px; 
+}
+
+/* Force le fond sombre sur tout le site si nécessaire */
+body {
+    background-color: #020617; 
+    margin: 0;
+    padding: 0;
+    color: white;
+}
+
+/* Exemple d’un bouton réutilisable */
+.btn-primary {
+    @apply bg-primary text-white font-bold py-3 px-6 rounded hover:bg-blue-700 transition-colors;
+}
+
+/*Carousel*/
+#homeCarousel {
+    /* On bloque la hauteur maximale à 450px par exemple */
+    height: 450px !important; 
+    max-height: 450px !important;
+    width: 100% !important;
+    overflow: hidden !important;
+}
+
+#homeCarousel .carousel-inner,
+#homeCarousel .carousel-item {
+    height: 100% !important;
+}
+
+#homeCarousel .carousel-item img {
+    width: 100% !important;
+    height: 100% !important;
+    /* C'est ici que la magie opère : cover remplit l'espace sans déformer */
+    object-fit: cover !important; 
+    object-position: center; /* Centre l'image pour ne pas couper les visages */
+}
+
+.carousel-control-prev, 
+.carousel-control-next {
+    z-index: 5 !important; /* Pour être sûr qu'ils soient au-dessus de l'image */
+}
+
+.carousel-indicators {
+    z-index: 5 !important;
+}
+
+/* End carousel */
+
+/* Header*/
+/* ===== HEADER PREMIUM ===== */
+.navbar-premium {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    /* Effet Glassmorphism : flou et semi-transparence */
+    background: rgba(2, 6, 23, 0.8) !important;
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    transition: all 0.3s ease;
+}
+
+.pt-32 {
+    padding-top: 8rem !important; 
+}
+
+.nav-links {
+    gap: 2rem;
+}
+
+.nav-links a {
+    color: rgba(255, 255, 255, 0.7);
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 0.95rem;
+    transition: color 0.3s ease;
+}
+
+.nav-links a:hover, 
+.nav-links a.active {
+    color: #ffffff;
+}
+
+.nav-links a.active {
+    position: relative;
+}
+
+/* Petit trait sous le lien actif */
+.nav-links a.active::after {
+    content: "";
+    position: absolute;
+    bottom: -5px;
+    left: 0;
+    width: 20px;
+    height: 2px;
+    background: var(--color-secondary);
+}
+
+/* Bouton dans la nav */
+.btn-nav {
+    padding: 0.5rem 1.2rem;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 50px;
+    color: white;
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+}
+
+.btn-nav:hover {
+    background: white;
+    color: var(--color-primary);
+}
+
+/* Ajustement du padding du body pour que le Hero ne soit pas caché */
+body {
+    padding-top: 0; /* On gère le padding directement dans le Hero pour un look plus immersif */
+}
+
+/* Footer stylisé */
+.footer-premium {
+    background: #020617;
+    color: rgba(255, 255, 255, 0.5);
+    padding: 3rem 0;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* button pre-heros */
+@theme {
+  /* Bleu Finance Premium */
+  --color-primary: #0f172a; 
+  --color-primary-hover: #1e293b;
+  --color-secondary: #3b82f6; /* Bleu plus vif pour les accents */
+}
+
+/* Le bouton "Expert" */
+.btn-primary {
+    @apply bg-primary text-white font-semibold py-3.5 px-8 rounded-full transition-all duration-300 shadow-md hover:shadow-xl hover:-translate-y-0.5 active:translate-y-0 border-none;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px; /* Espace entre texte et icône éventuelle */
+}
+
+/* Ajout d'un espacement entre le bouton du haut et le titre */
+.hero-badge-container {
+    margin-bottom: 2.5rem;
+}
+
+.nav-links {
+    display: flex;
+    gap: 1.5rem; /* On réduit un peu l'écart pour que ça tienne mieux */
+    align-items: center; /* Aligne verticalement au centre */
+}
+
+.nav-links a {
+    color: rgba(255, 255, 255, 0.7);
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 0.9rem; /* Légère réduction de taille pour le confort */
+    transition: color 0.3s ease;
+    
+    /* LA SOLUTION ICI : */
+    white-space: nowrap; /* Empêche le texte de passer sur deux lignes */
+    display: block;
+    line-height: 1; /* Force une hauteur de ligne simple */
+}
+
+/* Ajustement spécifique pour le bouton Espace Client qui semble décalé */
+.btn-nav {
+    white-space: nowrap;
+    display: inline-block;
+    vertical-align: middle;
+}
+
+/* On force le conteneur nav à ne pas s'étirer bizarrement sur PC */
+@media (min-width: 992px) {
+    .navbar-premium nav {
+        height: 70px; /* On fixe une hauteur constante pour le header sur PC */
+    }
+}
+
+/* Barre de séparation verticale */
+.nav-separator {
+    width: 1px;
+    height: 24px; /* Hauteur de la barre */
+    background: rgba(255, 255, 255, 0.2); /* Blanc très léger */
+    margin: 0 1.5rem; /* Espace à gauche et à droite de la barre */
+    align-self: center;
+}
+
+/* On s'assure que le conteneur parent (nav) reste en ligne */
+.navbar-premium nav {
+    display: flex;
+    align-items: center;
+}
+
+/* Hero*/
+/* ===== HERO PREMIUM ===== */
+.hero-home {
+    min-height: 80vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding-bottom: 0;
+    text-align: center;
+    padding: 2rem;
+    
+    /* Espace par défaut pour PC */
+    padding-top: 100px; 
+
+    background: radial-gradient(
+        1200px circle at top,
+        #1e3a8a 0%,
+        #020617 60%
+    );
+}
+
+/* On s'assure que le menu reste sur une seule ligne sur PC */
+@media (min-width: 992px) {
+    .navbar-premium nav {
+        flex-direction: row !important;
+        flex-wrap: nowrap !important;
+    }
+    
+    .nav-links {
+        display: flex !important;
+        flex-direction: row;
+        align-items: center;
+        margin-left: 2rem !important; /* Espace entre le logo et les liens */
+    }
+}
+
+/* On réduit un peu l'espace entre les liens si l'écran est un peu petit */
+@media (max-width: 1200px) and (min-width: 992px) {
+    .nav-links {
+        gap: 1rem;
+    }
+}
+
+/* --- LES CORRECTIFS MOBILE --- */
+@media (max-width: 991px) {
+    .hero-home {
+        /* On augmente l'espace en haut pour ne pas toucher le logo */
+        padding-top: 130px !important; 
+    }
+    
+    .navbar-premium {
+        /* On s'assure que le header ne soit pas trop haut sur mobile */
+        padding: 5px 0;
+    }
+}
+
+.hero-content {
+    max-width: 900px;
+    animation: heroFade 1.2s ease-out both;
+}
+
+.hero-title {
+    font-size: clamp(2.2rem, 4vw, 3.5rem);
+    font-weight: 800;
+    color: #ffffff;
+    margin-bottom: 1.5rem;
+}
+
+.hero-subtitle {
+    font-size: 1.2rem;
+    color: #ffffff;
+    margin-bottom: 2.5rem;
+}
+
+.hero-actions .btn {
+    padding: 0.9rem 2.5rem;
+    font-size: 1.1rem;
+}
+
+/* Animation douce */
+@keyframes heroFade {
+    from {
+        opacity: 0;
+        transform: translateY(25px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/*video presta*/
+/* --- SECTION VIDÉO --- */
+.video-section {
+    background-color: #020617;
+    padding-bottom: 5rem;
+}
+
+.video-container {
+    max-width: 900px;
+    margin-top: -60px; /* Ajuste ici pour coller plus ou moins au texte */
+    position: relative;
+    z-index: 20;
+}
+
+.video-wrapper {
+    background: rgba(255, 255, 255, 0.05);
+    padding: 8px;
+    border-radius: 24px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    
+    /* SOLUTION DÉFORMATION : On force le ratio 16/9 standard des vidéos */
+    aspect-ratio: 16 / 9; 
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.main-video {
+    width: 100%;
+    height: 100%;
+    border-radius: 18px;
+    /* Force la vidéo et le poster à remplir parfaitement le cadre sans sauter */
+    object-fit: cover; 
+    display: block;
+}
+
+.video-caption {
+    text-align: center;
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 0.9rem;
+    font-style: italic;
+    margin-top: 1.5rem;
+}
+
+/* Mobile : On réduit le margin-top négatif pour ne pas manger le texte */
+/* --- ADAPTATION MOBILE (PORTABLE) --- */
+@media (max-width: 991px) {
+    .video-container {
+        margin-top: 0; /* On ne chevauche pas sur mobile pour laisser respirer le texte */
+        padding: 0 15px;
+    }
+    
+    .video-wrapper {
+        border-radius: 12px; /* Bords un peu moins arrondis sur petit écran */
+        border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .hero-home {
+        min-height: auto;
+        padding-top: 120px; /* Espace pour le logo */
+        padding-bottom: 60px; /* Espace avant la vidéo */
+    }
+    
+    .video-caption {
+        font-size: 0.8rem;
+        margin-top: 1rem;
+    }
+}
+
+/* Bouton Audit Spécifique */
+.btn-audit {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+    color: white;
+    font-weight: 600;
+    padding: 1rem 2.5rem;
+    border-radius: 50px;
+    text-decoration: none;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3), 
+                0 0 0 0 rgba(59, 130, 246, 0.4);
+}
+
+.btn-audit:hover {
+    color: white;
+    transform: scale(1.05);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4), 
+                0 0 20px rgba(59, 130, 246, 0.6); /* Effet de lueur au survol */
+    background: linear-gradient(135deg, #2563eb 0%, #60a5fa 100%);
+}
+
+.btn-audit i {
+    font-size: 1.2rem;
+    transition: transform 0.3s ease;
+}
+
+.btn-audit:hover i {
+    transform: translateX(5px); /* La flèche bouge légèrement */
+}
+
+/* Adaptation mobile */
+@media (max-width: 991px) {
+    .btn-audit {
+        width: 100%; /* Prend toute la largeur sur mobile pour être plus cliquable */
+        justify-content: center;
+        font-size: 0.95rem;
+        padding: 0.8rem 1.5rem;
+    }
+}
+
+/* CSS Contact*/
+/* Progress Bar */
+.progress-container {
+    height: 6px;
+    background: rgba(255,255,255,0.1);
+    border-radius: 10px;
+    overflow: hidden;
+}
+.progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, #3b82f6, #ef4444);
+    transition: width 0.5s ease;
+}
+
+/* Steps management */
+.form-step {
+    display: none;
+}
+.form-step.active {
+    display: block;
+    animation: fadeIn 0.4s ease-out;
+}
+
+/* Calendrier & Heures */
+.calendar-ui {
+    background: rgba(255, 255, 255, 0.05) !important;
+    border-radius: 16px;
+    padding: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.calendar-header {
+    background: rgba(255, 255, 255, 0.1); /* Bandeau légèrement plus clair */
+    color: white !important;
+    padding: 10px 15px;
+    border-radius: 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.month-year {
+    font-weight: 600;
+    letter-spacing: 1px;
+}
+
+.btn-cal-nav {
+    background: transparent;
+    border: none;
+    color: white;
+    font-size: 1.2rem;
+    cursor: pointer;
+}
+
+.calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr); /* 7 colonnes pour les jours de la semaine */
+    gap: 8px;
+    margin-top: 15px;
+}
+
+.cal-day {
+    aspect-ratio: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    transition: all 0.2s ease;
+}
+
+.cal-day:hover:not(.disabled):not(.empty) {
+    background: #3b82f6;
+    transform: translateY(-2px);
+}
+
+.cal-day.active {
+    background: #3b82f6;
+    box-shadow: 0 0 15px rgba(59, 130, 246, 0.5);
+}
+
+.cal-day.disabled {
+    opacity: 0.15;
+    cursor: not-allowed;
+    background: transparent;
+}
+
+/* Grille des heures */
+.time-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+}
+
+.time-slot {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: white;
+    padding: 8px;
+    border-radius: 6px;
+    text-align: center;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.time-slot:hover {
+    background: rgba(59, 130, 246, 0.2);
+    border-color: #3b82f6;
+}
+
+.time-slot.selected {
+    background: #3b82f6;
+    color: white;
+}
+.time-slot.disabled {
+    opacity: 0.3;
+    pointer-events: none;
+}
+
+.btn-nav-step {
+    color: white;
+    background: transparent;
+    border: 1px solid rgba(255,255,255,0.2);
+    padding: 0.8rem 1.5rem;
+    border-radius: 50px;
+}
+
+/* Correction de la section Audit */
+.audit-section {
+    background-color: #020617 !important; /* Force le noir profond */
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* On s'assure que la carte est bien visible sur fond noir */
+.audit-card {
+    background: rgba(255, 255, 255, 0.03) !important;
+    backdrop-filter: blur(15px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 2.5rem;
+    border-radius: 24px;
+}
+
+.calendar-days-header {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr); /* 7 colonnes égales */
+    text-align: center;
+    font-weight: bold;
+    color: rgba(255, 255, 255, 0.7);
+    margin-bottom: 10px;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+}
+
+/* Assure-toi que ta grille a aussi 7 colonnes */
+#calendarGrid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 5px;
+}
+
+#error-banner {
+    backdrop-filter: blur(8px);
+    box-shadow: 0 4px 15px rgba(239, 68, 68, 0.2);
+}
+
+/* Petit effet d'entrée */
+.animate-in {
+    animation: slideIn 0.4s ease-out;
+}
+
+@keyframes slideIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* --- CALENDRIER RESPONSIVE --- */
+/* --- CORRECTIF CALENDRIER MOBILE --- */
+@media (max-width: 768px) {
+    .audit-card {
+        padding: 1rem !important; /* Réduit l'espace autour */
+    }
+
+    .calendar-ui {
+        padding: 8px !important;
+        width: 100% !important;
+    }
+
+    .calendar-grid {
+        gap: 4px; /* On réduit l'espace entre les jours */
+    }
+
+    .time-slots-container p {
+        margin-top: 10px;
+        margin-bottom: 20px !important;
+        text-align: center;
+        color: #6366f1; /* Une petite touche de couleur pour séparer visuellement */
+    }
+
+    .time-slot {
+        height: 45px !important;
+        display: flex !important;
+        align-items: center;
+        justify-content: center;
+        margin: 0 !important; /* On enlève les marges parasites */
+        font-size: 1rem !important;
+    }
+
+    /* 5. On centre le titre principal */
+    .form-step h3 {
+        text-align: center;
+        font-size: 1.4rem !important;
+        margin-bottom: 1.5rem !important;
+    }
+
+    .cal-day {
+        font-size: 0.75rem !important; /* Chiffres plus petits */
+        height: auto !important; 
+        aspect-ratio: 1 / 1; /* Force le carré parfait */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0 !important;
+        min-width: 0; /* Évite que le flexbox ne l'étire */
+    }
+
+    .calendar-days-header {
+        font-size: 0.65rem !important; /* L M M J V S D plus petits */
+        margin-bottom: 5px;
+    }
+
+    .month-year {
+        font-size: 1rem !important;
+    }
+    
+    /* On évite que la grille d'heures soit trop serrée */
+    .time-grid {
+        display: grid !important;
+        grid-template-columns: repeat(3, 1fr) !important;
+        gap: 8px !important;
+    }
+
+    .time-slot {
+        padding: 8px 5px !important;
+        font-size: 0.85rem !important;
+        margin: 0 !important; /* Reset des marges Bootstrap */
+    }
+
+    /* On centre le titre et le bandeau d'erreur */
+    .audit-card h3 {
+        text-align: center;
+        font-size: 1.25rem !important;
+    }
+
+    #error-banner {
+        font-size: 0.8rem;
+        padding: 10px;
+    }
+
+    /* Le bouton suivant en plein écran en bas */
+    .btn-audit {
+        width: 100% !important;
+        margin-top: 1.5rem;
+    }
+}
+
+/* Style pour les boutons de navigation (Mois préc/suiv) */
+.btn-cal-nav {
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.1) !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+}
+
+.btn-cal-nav:hover {
+    background: #3b82f6 !important;
+}
+
+/* Accueil - Goals*/
+/* --- SECTION GOALS PREMIUM --- */
+.premium-goal-card {
+    position: relative;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    padding: 3rem 2rem 2rem;
+    border-radius: 24px;
+    height: 100%;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow: hidden;
+    backdrop-filter: blur(10px);
+}
+
+.premium-goal-card:hover {
+    transform: translateY(-12px);
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(59, 130, 246, 0.5);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+}
+
+/* Numéro d'étape stylisé */
+.step-number {
+    position: absolute;
+    top: 20px;
+    right: 25px;
+    font-size: 3rem;
+    font-weight: 900;
+    color: rgba(255, 255, 255, 0.03);
+    line-height: 1;
+    transition: all 0.4s ease;
+}
+
+.premium-goal-card:hover .step-number {
+    color: rgba(59, 130, 246, 0.1);
+    transform: scale(1.1);
+}
+
+/* Icône wrapper */
+.goal-icon-wrapper {
+    width: 80px;
+    height: 80px;
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(30, 58, 138, 0.4));
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1.5rem;
+    border: 1px solid rgba(59, 130, 246, 0.2);
+}
+
+.goal-img {
+    width: 45px;
+    height: 45px;
+    object-fit: contain;
+    /* Si tes images ont du blanc, on peut les rendre lumineuses */
+    filter: drop-shadow(0 0 5px rgba(59, 130, 246, 0.5));
+}
+
+/* Effet de lueur interne au survol */
+.card-glow {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 0%;
+    background: linear-gradient(to top, rgba(59, 130, 246, 0.1), transparent);
+    transition: height 0.4s ease;
+    z-index: -1;
+}
+
+.premium-goal-card:hover .card-glow {
+    height: 100%;
+}
+
+/* --- BANNER ENGAGEMENT --- */
+.engagement-banner {
+    background: linear-gradient(90deg, #0f172a 0%, #1e293b 100%);
+    border-radius: 32px;
+    border: 1px solid rgba(212, 175, 55, 0.3); /* Bordure dorée subtile */
+    position: relative;
+    overflow: hidden;
+}
+
+.badge-premium {
+    background: rgba(212, 175, 55, 0.1);
+    color: #D4AF37;
+    padding: 6px 16px;
+    border-radius: 50px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    border: 1px solid rgba(212, 175, 55, 0.3);
+}
+
+/* Bouton Or Premium */
+.btn-premium-gold {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    background: linear-gradient(135deg, #D4AF37 0%, #B8860B 100%);
+    color: #000 !important;
+    font-weight: 800;
+    padding: 1.2rem 2.5rem;
+    border-radius: 16px;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    box-shadow: 0 10px 20px rgba(184, 134, 11, 0.2);
+}
+
+.btn-premium-gold:hover {
+    transform: scale(1.05) translateY(-3px);
+    box-shadow: 0 15px 30px rgba(184, 134, 11, 0.4);
+}
+
+
+/* Accueil - Témoins*/
+
+/* --- TESTIMONIALS SECTION --- */
+.premium-testimonial-card {
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 28px;
+    padding: 3rem;
+    position: relative;
+    backdrop-filter: blur(15px);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.premium-testimonial-card:hover {
+    background: rgba(255, 255, 255, 0.04);
+    border-color: rgba(59, 130, 246, 0.4);
+    transform: translateY(-8px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+}
+
+.quote-mark {
+    position: absolute;
+    top: 20px;
+    left: 30px;
+    font-size: 5rem;
+    color: #3b82f6;
+    opacity: 0.15;
+    font-family: serif;
+    line-height: 1;
+}
+
+.testimonial-text {
+    font-size: 1.15rem;
+    line-height: 1.8;
+    color: #cbd5e1;
+    font-style: italic;
+    margin-bottom: 2.5rem;
+    position: relative;
+    z-index: 2;
+
+    flex-grow: 1; /* C'est la touche magique : le texte pousse le profil vers le bas */
+    display: flex;
+    align-items: center; /* Optionnel : centre le texte verticalement si tu veux */
+}
+
+.testimonial-profile {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    padding-top: 1.5rem;
+}
+
+.author-avatar {
+    width: 55px;
+    height: 55px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #3b82f6;
+    padding: 2px;
+}
+
+.author-name {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: white;
+    margin-bottom: 2px;
+}
+
+.author-role {
+    font-size: 0.85rem;
+    color: #3b82f6;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin: 0;
+}
+
+/* Navigation Buttons */
+.carousel-nav-btn {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.05);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.carousel-nav-btn:hover {
+    background: #3b82f6;
+    border-color: #3b82f6;
+    color: white;
+    transform: scale(1.1);
+}
+
+/* Réduction drastique de l'espace entre les deux sections */
+.testimonials-section {
+    padding-top: 0.5rem !important; /* On réduit le haut de la section témoignages */
+}
+
+/* On réduit aussi l'espace SOUS le texte d'intro "Découvrez comment..." 
+   pour remonter les cartes du carousel */
+.testimonials-section .mb-16 {
+    margin-bottom: 2rem !important;
+}
+
+/* Optionnel : Si le bloc "Je me lance" a une marge basse automatique */
+#testimonials {
+    margin-top: -1rem; /* On remonte légèrement toute la section */
+}
+
+/* Ajustements spécifiques Mobile */
+@media (max-width: 991px) {
+
+    .testimonials-section .col-lg-5 {
+        width: 100% !important;
+        flex: 0 0 100% !important;
+        max-width: 100% !important;
+    }
+
+    /* Cela permet d'avoir une seule bulle bien centrée et lisible */
+    .testimonials-section .row.g-4 > div:nth-child(n+2) {
+        display: none !important;
+    }
+
+    .premium-testimonial-card {
+        /* On force une hauteur minimale pour que toutes les cartes 
+           soient identiques au défilement */
+        min-height: 400px !important; 
+        
+        display: flex !important;
+        flex-direction: column !important;
+        justify-content: space-between !important;
+        margin-bottom: 0; /* On laisse le carousel gérer l'espacement */
+    }
+
+    .testimonial-text {
+        /* On permet au texte de prendre l'espace mais on centre 
+           pour un look "Interview" pro */
+        flex-grow: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+    }
+
+    .testimonial-profile {
+        /* On s'assure que le profil reste bien en bas */
+        margin-top: auto;
+        padding-top: 1rem;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+    }
+}
+
+/* 4. Ralentir le défilement (Animation plus douce) */
+.carousel-item {
+    transition: transform 1.2s cubic-bezier(0.645, 0.045, 0.355, 1) !important;
+}
+
+/* Ralentissement de la transition entre les slides */
+.carousel-item {
+    transition: transform 1.2s cubic-bezier(0.645, 0.045, 0.355, 1) !important;
+}
+
+/* On s'assure que la rangée Bootstrap s'étire bien */
+.carousel-item .row {
+    display: flex;
+    align-items: stretch; /* Force toutes les colonnes à avoir la même hauteur */
+}
+
+.carousel-item .col-lg-5 {
+    display: flex; /* Permet à la carte à l'intérieur de s'étirer */
+}
+
+
+/*Accueil - FAQS */
+/* --- FAQ PREMIUM - LE FIX --- */
+
+/* Supprimer la flèche noire par défaut sur tous les navigateurs */
+.premium-faq-item summary::-webkit-details-marker {
+    display: none !important;
+}
+.premium-faq-item summary {
+    list-style: none !important;
+    display: flex !important;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem 2rem;
+    cursor: pointer;
+    outline: none;
+    user-select: none;
+}
+
+.premium-faq-item {
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 16px;
+    margin-bottom: 1rem;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Titre de la question */
+.faq-title {
+    font-size: 1.1rem;
+    font-weight: 500;
+    color: #f8fafc; /* Blanc cassé plus doux */
+    transition: color 0.3s ease;
+}
+
+/* L'icône "+" stylisée */
+.faq-icon {
+    width: 28px;
+    height: 28px;
+    background: rgba(59, 130, 246, 0.1);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #3b82f6;
+    transition: all 0.4s ease;
+    flex-shrink: 0; /* Empêche l'icône de s'écraser */
+}
+
+/* --- INTERACTIVITÉ --- */
+
+/* Au survol */
+.premium-faq-item:hover {
+    background: rgba(255, 255, 255, 0.04);
+    border-color: rgba(59, 130, 246, 0.4);
+}
+
+/* Quand c'est ouvert */
+.premium-faq-item[open] {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(59, 130, 246, 0.5);
+    box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
+}
+
+.premium-faq-item[open] .faq-icon {
+    transform: rotate(135deg); /* Le + devient un x élégant */
+    background: #3b82f6;
+    color: white;
+}
+
+.premium-faq-item[open] .faq-title {
+    color: #3b82f6; /* Le titre s'illumine quand ouvert */
+}
+
+/* Contenu de la réponse */
+.faq-content {
+    padding: 0 2rem 1.8rem 2rem;
+    color: #94a3b8; /* Gris bleuâtre pro */
+    line-height: 1.7;
+    font-size: 1rem;
+}
+
+/* ============================================================
+   CORRECTIF FINAL : AUDIT FORM & RESPONSIVE PORTABLE
+   ============================================================ */
+
+/* 1. Harmonisation des couleurs */
+:root {
+    --accent-color: #3d5afe;
+    --accent-hover: #304ffe;
+}
+
+/* 2. Fix du Bouton Suivant */
+#nextBtn {
+    /* On utilise @apply pour le gros du style */
+    @apply flex items-center gap-3 text-white px-8 py-4 rounded-2xl font-bold transition-all shadow-lg justify-center;
+    /* On utilise du CSS pur pour les couleurs et le forçage */
+    background-color: var(--accent-color) !important;
+    border: none !important;
+    min-width: 160px;
+}
+
+#nextBtn:hover {
+    background-color: var(--accent-hover) !important;
+    box-shadow: 0 10px 15px -3px rgba(59, 130, 246, 0.5);
+}
+
+/* 3. Grille des heures */
+#timeGrid {
+    display: grid !important;
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 8px !important; 
+    margin-top: 10px;
+}
+
+.time-slot {
+    @apply p-2.5 text-xs sm:text-sm rounded-xl border transition-all cursor-pointer text-center;
+    background-color: rgba(255, 255, 255, 0.05) !important;
+    border-color: rgba(255, 255, 255, 0.1) !important;
+    color: rgba(255, 255, 255, 0.8) !important;
+}
+
+.time-slot.selected {
+    background-color: var(--accent-color) !important;
+    border-color: var(--accent-color) !important;
+    color: white !important;
+}
+
+/* 4. Fix du message d'erreur */
+#error-banner {
+    @apply mt-6 mb-2 py-3 px-4 border rounded-xl items-center gap-2;
+    border-color: rgba(239, 68, 68, 0.2) !important;
+    background-color: rgba(239, 68, 68, 0.1) !important;
+    color: #f87171 !important;
+    display: none; 
+}
+
+#error-banner.visible {
+    display: flex !important;
+}
+
+/* 5. CORRECTIFS PORTABLE (MOBILE) */
+@media (max-width: 768px) {
+    .calendar-ui {
+        padding: 10px !important;
+    }
+
+    #calendarGrid {
+        gap: 6px !important;
+    }
+
+    .cal-day {
+        @apply p-3 text-sm;
+        height: auto !important;
+        aspect-ratio: 1/1 !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+    }
+
+    #nextBtn {
+        width: 100% !important;
+        margin-top: 1.5rem !important;
+    }
+
+    .audit-card-premium {
+        padding: 1.25rem !important;
+        margin: 0 5px !important;
+    }
+
+    .text-4xl { font-size: 1.6rem !important; }
+}
+
+/* Animation */
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    10%, 30%, 50%, 70%, 90% { transform: translateX(-4px); }
+    20%, 40%, 60%, 80% { transform: translateX(4px); }
+}
+.animate-shake {
+    animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both;
+}
+
+/* Style pour les champs invalides */
+.premium-input.border-red-500 {
+    border-color: rgba(239, 68, 68, 0.5) !important;
+    background: rgba(239, 68, 68, 0.05) !important;
+}
+
+/* 1. Apparence de base : on applique l'effet de bordure lumineuse tout le temps */
+.form-step input, 
+.form-step textarea, 
+.form-step select {
+    @apply w-full bg-white/5 rounded-xl px-4 py-3 text-white transition-all duration-300 outline-none;
+    
+    /* L'encart : bordure plus claire et ombre interne pour le relief */
+    border: 1px solid rgba(255, 255, 255, 0.4) !important; 
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.05), inset 0 1px 3px rgba(0,0,0,0.2);
+}
+
+/* 2. Style spécifique pour le texte d'exemple (placeholder) */
+.form-step input::placeholder {
+    color: rgba(255, 255, 255, 0.3) !important;
+}
+
+/* 3. Accentuation sur les champs obligatoires (*) */
+.form-step [required] {
+    /* On utilise une bordure légèrement bleutée pour attirer l'oeil sur l'obligation */
+    border-color: rgba(59, 130, 246, 0.5) !important;
+}
+
+/* 4. Effet au survol (Hover) pour montrer que c'est cliquable */
+.form-step input:hover {
+    border-color: rgba(255, 255, 255, 0.8) !important;
+    background: rgba(255, 255, 255, 0.08);
+}
+
+/* 5. Effet quand on clique (Focus) : On le rend encore plus brillant */
+.form-step input:focus {
+    border-color: #ffffff !important;
+    box-shadow: 0 0 15px rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.1);
+}
+
+/* Style spécifique pour les listes déroulantes */
+#auditForm select {
+    appearance: none; /* Supprime la flèche par défaut */
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='white'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 1rem center;
+    background-size: 1.2em;
+    cursor: pointer;
+}
+
+/* Style des options à l'intérieur de la liste */
+#auditForm option {
+    background-color: #1a1a1a; /* Couleur sombre pour le menu qui s'ouvre */
+    color: white;
+}
+
+/* ============================================================
+   FIX BUILD & ALIGNEMENT BOUTONS MOBILE
+   ============================================================ */
+
+@media (max-width: 768px) {
+    /* Conteneur des boutons */
+    .flex.justify-between.items-center.mt-8 {
+        margin-top: 3rem !important; /* Espace pour ne pas toucher la ligne */
+        display: flex !important;
+        flex-direction: row !important; /* Force l'alignement côte à côte */
+        gap: 12px !important;
+        width: 100% !important;
+    }
+
+    /* Bouton Précédent */
+    #prevBtn {
+        flex: 1 !important;
+        display: flex !important;
+        justify-content: center !important;
+        align-items: center !important;
+        padding-top: 1rem !important;
+        padding-bottom: 1rem !important;
+        white-space: nowrap !important;
+        background-color: transparent !important;
+        border: 1px solid rgba(255, 255, 255, 0.1) !important;
+        border-radius: 12px !important;
+    }
+
+    /* Bouton Suivant */
+    #nextBtn {
+        flex: 2 !important; /* Plus large que précédent */
+        display: flex !important;
+        justify-content: center !important;
+        align-items: center !important;
+        margin-top: 0 !important; /* Supprime le décalage */
+        padding-top: 1rem !important;
+        padding-bottom: 1rem !important;
+        border-radius: 12px !important;
+        background-color: var(--accent-color) !important;
+    }
+
+    /* Mode Paysage (Téléphone sur le côté) */
+    @media (orientation: landscape) {
+        .flex.justify-between.items-center.mt-8 {
+            margin-top: 1.5rem !important;
+        }
+        .audit-card-premium {
+            padding: 1rem !important;
+        }
+    }
+}
+
+/* Style des cartes d'objectifs */
+.objective-card {
+    @apply cursor-pointer block;
+}
+
+.objective-content {
+    @apply flex items-center justify-between p-4 rounded-xl border border-white/10 
+           bg-white/5 transition-all duration-300;
+}
+
+/* Hover effect */
+.objective-card:hover .objective-content {
+    @apply border-white/30 bg-white/10;
+}
+
+/* État sélectionné (quand le radio caché est coché) */
+.objective-card input:checked + .objective-content {
+    border-color: var(--accent-color) !important;
+    background-color: rgba(61, 90, 254, 0.1) !important;
+    box-shadow: 0 0 15px rgba(61, 90, 254, 0.15);
+}
+
+/* Petit cercle de validation à droite */
+.check-circle {
+    @apply w-5 h-5 rounded-full border-2 border-white/20 transition-all;
+}
+
+.objective-card input:checked + .objective-content .check-circle {
+    @apply border-none;
+    background-color: var(--accent-color);
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'%3E%3C/polyline%3E%3C/svg%3E");
+    background-size: 12px;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+/* Classe d'erreur pour les cartes d'objectifs */
+.objective-content.invalid-card {
+    border-color: rgba(239, 68, 68, 0.6) !important;
+    background-color: rgba(239, 68, 68, 0.05) !important;
+}
+
+/* On remet la bordure normale dès qu'on clique sur une option */
+.objective-card input:checked + .objective-content {
+    border-color: var(--accent-color) !important;
+    background-color: rgba(61, 90, 254, 0.1) !important;
+}
+
+/* Animation de vibration et bordure rouge */
+.invalid-card {
+    border-color: rgba(239, 68, 68, 0.8) !important;
+    background-color: rgba(239, 68, 68, 0.05) !important;
+    box-shadow: 0 0 10px rgba(239, 68, 68, 0.1) !important;
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-5px); }
+    75% { transform: translateX(5px); }
+}
+
+.animate-shake {
+    animation: shake 0.4s ease-in-out;
+}
+
+#modal-card {
+    transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* Optionnel : animation de pulsation sur l'icône de succès */
+.bg-green-500\/20 {
+    animation: pulse-green 2s infinite;
+}
+
+@keyframes pulse-green {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+    100% { transform: scale(1); }
+}
