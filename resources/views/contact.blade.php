@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', $page->meta_title ?? $page->title)
+@section('title', 'Contact')
 
 @section('content')
     <section class="audit-section pt-32 pb-20 bg-[#020617] min-h-screen relative overflow-hidden">
