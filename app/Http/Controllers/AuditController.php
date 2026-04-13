@@ -11,6 +11,8 @@ use Illuminate\Support\Facades\Log;
 use App\Mail\ConfirmationRendezVous;
 use Illuminate\Support\Facades\Mail;
 
+use App\Models\PageBlock;
+
 class AuditController extends Controller
 {
     public function getOffDays()
@@ -166,10 +168,59 @@ class AuditController extends Controller
 
            
             //  ENVOI DU MAIL
-            if ($info->email) {
-                // On envoie l'objet $info à ton Mailable
-                Mail::to($info->email)->send(new ConfirmationRendezVous($info));
-            }
+            // 1. On récupère seulement le TEXTE saisi par l'admin
+            $emailBlock = \DB::table('page_blocks')->where('type', 'email_audit_confirmation')->first();
+            $messageUser = $emailBlock ? $emailBlock->content : "Bonjour {prenom}, votre rendez-vous est confirmé.";
+
+            // 2. On prépare les variables
+            $vars = [
+                '{prenom}'     => $info->prenom,
+                '{nom}'        => $info->nom,
+                '{societe}'    => $info->company_name,
+                '{date}'       => \Carbon\Carbon::parse($info->meeting_date)->format('d/m/Y'),
+                '{heure}'      => $info->meeting_hour,
+                '{link_teams}' => 'https://teams.live.com/meet/93469201237491?p=WBX9LmrsbYkHqLKMT6'
+            ];
+
+            // 3. On remplace les balises dans le texte de l'utilisateur
+            $textFinal = str_replace(array_keys($vars), array_values($vars), $messageUser);
+
+            // 4. On injecte ce texte dans le "Moule" HTML pro
+            $finalHtml = '
+            <div style="font-family: \'Segoe UI\', Tahoma, Geneva, Verdana, sans-serif; background-color: #f8fafc; padding: 40px 10px; color: #334155;">
+                <div style="max-width: 600px; margin: 0 auto; background: #ffffff; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.05); border: 1px solid #e2e8f0;">
+                    
+                    <div style="background-color: #ffffff; padding: 30px; text-align: center; border-bottom: 4px solid #1e3a8a;">
+                        <img src="http://37.187.183.97//images/logo_fix_tr.png" alt="Armature Business" style="max-height: 60px; width: auto; margin-bottom: 10px;">
+                        <div style="color: #1e3a8a; font-size: 14px; font-weight: bold; letter-spacing: 2px; text-transform: uppercase;">Armature Business</div>
+                    </div>
+
+                    <div style="padding: 40px 30px; line-height: 1.8;">
+                        <div style="font-size: 16px;">
+                            ' . $textFinal . '
+                        </div>
+                        
+                        <div style="text-align: center; margin-top: 40px; padding-top: 20px; border-top: 1px dashed #e2e8f0;">
+                            <p style="font-size: 14px; color: #64748b; margin-bottom: 20px;">Utilisez le lien ci-dessous pour vous connecter le jour J :</p>
+                            <a href="'.$vars['{link_teams}'].'" style="background: #1e3a8a; color: #ffffff; padding: 16px 32px; text-decoration: none; border-radius: 10px; font-weight: 600; display: inline-block; transition: background 0.3s ease;">
+                                Rejoindre la réunion Teams
+                            </a>
+                        </div>
+                    </div>
+
+                    <div style="background-color: #f1f5f9; padding: 25px; text-align: center; font-size: 12px; color: #94a3b8;">
+                        <p style="margin: 0 0 8px 0;"><strong>Armature Business</strong> • Expertise & Audit Digital</p>
+                        <p style="margin: 0;">© '.date('Y').' Armature Business. Tous droits réservés.</p>
+                        <div style="margin-top: 15px; font-size: 10px; color: #cbd5e1;">
+                            Cet email a été envoyé suite à votre demande de rendez-vous sur notre plateforme.
+                        </div>
+                    </div>
+                </div>
+            </div>';
+
+            \Mail::html($finalHtml, function ($message) use ($info) {
+                $message->to($info->email)->subject('Confirmation de votre Audit');
+            });
 
             return response()->json([
                 'success' => true, 
@@ -185,4 +236,45 @@ class AuditController extends Controller
             ], 500);
         }
     }
+
+    public function updateBlock(Request $request, $id)
+    {
+        $block = PageBlock::findOrFail($id);
+
+        // --- GESTION DES TEXTES ET DU CONTENU ---
+        if ($request->has('content')) {
+            // Cas du Mail de confirmation (HTML de Quill)
+            $block->content = $request->input('content');
+        } 
+        elseif ($request->has('content_json')) {
+            // Cas des blocs classiques (Titre, descriptions, etc.)
+            $block->content = json_encode($request->input('content_json'));
+        }
+
+        // --- GESTION DES MÉDIAS (IMAGE) ---
+        if ($request->hasFile('image_path')) {
+            $file = $request->file('image_path');
+            $fileName = time() . '_' . $file->getClientOriginalName();
+            // On stocke dans public/images
+            $file->move(public_path('images'), $fileName);
+            $block->image_path = 'images/' . $fileName;
+        }
+
+        // --- GESTION DES MÉDIAS (VIDÉO) ---
+        if ($request->hasFile('video_path')) {
+            $file = $request->file('video_path');
+            $fileName = time() . '_' . $file->getClientOriginalName();
+            $file->move(public_path('videos'), $fileName);
+            $block->video_path = 'videos/' . $fileName;
+        }
+
+        // --- VISIBILITÉ ---
+        $block->is_hidden = $request->has('is_hidden') ? 1 : 0;
+
+        $block->save();
+
+        return redirect()->back()->with('success', 'Le bloc #' . $id . ' a été mis à jour avec succès.');
+    }
+
+    
 }

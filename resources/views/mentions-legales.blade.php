@@ -19,9 +19,8 @@
                 </h2>
                 <div class="space-y-4 text-gray-400 text-sm leading-relaxed">
                     <p>Le présent site est édité par :</p>
-                    <p><strong class="text-white uppercase tracking-tighter">Société :</strong> <span class="text-red-500 font-bold">[À REMPLIR : EX: EAU2L DIGITAL SAS]</span></p>
-                    <p><strong class="text-white uppercase tracking-tighter">Siège :</strong> <span class="text-red-500 font-bold">[À REMPLIR : ADRESSE COMPLÈTE]</span></p>
-                    <p><strong class="text-white uppercase tracking-tighter">SIREN :</strong> <span class="text-red-500 font-bold">[À REMPLIR : NUMÉRO]</span></p>
+                    <p><strong class="text-white uppercase tracking-tighter">Société :</strong> <span class="text-red-500 font-bold">EAU2L Consulting</span></p>
+                    <p><strong class="text-white uppercase tracking-tighter">SIREN :</strong> <span class="text-red-500 font-bold">100129634</span></p>
                     <p><strong class="text-white uppercase tracking-tighter">Contact :</strong> <span class="text-red-500 font-bold">[À REMPLIR : EMAIL]</span></p>
                 </div>
             </div>

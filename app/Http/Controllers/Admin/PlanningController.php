@@ -13,31 +13,35 @@ class PlanningController extends Controller
 {
     public function index()
     {
-        $now = now(); // Heure actuelle du serveur
+    $now = now();
+    $todayStr = $now->toDateString();
+    $timeStr = $now->toTimeString();
 
-        // 1. Tous les rendez-vous pour la liste
-        $meetings = \App\Models\InformationCustomer::orderBy('meeting_date', 'asc')
-            ->orderBy('meeting_hour', 'asc')
-            ->paginate(15);
+    // 1. AUJOURD'HUI (Futur proche)
+    $todayFuture = InformationCustomer::where('meeting_date', $todayStr)
+        ->where('meeting_hour', '>', $timeStr)
+        ->orderBy('meeting_hour', 'asc')
+        ->get();
 
-        // 2. Le VRAI prochain rendez-vous (Date future OU (Aujourd'hui ET Heure future))
-        $nextMeeting = \App\Models\InformationCustomer::where(function($query) use ($now) {
-                $query->where('meeting_date', '>', $now->toDateString())
-                    ->orWhere(function($q) use ($now) {
-                        $q->where('meeting_date', $now->toDateString())
-                            ->where('meeting_hour', '>', $now->toTimeString());
-                    });
-            })
-            ->where('status', '!=', 'cancelled')
-            ->orderBy('meeting_date', 'asc')
-            ->orderBy('meeting_hour', 'asc')
-            ->first();
+    // 2. PROCHAINEMENT (Strictement après aujourd'hui)
+    $otherFuture = InformationCustomer::where('meeting_date', '>', $todayStr)
+        ->orderBy('meeting_date', 'asc')
+        ->orderBy('meeting_hour', 'asc')
+        ->get();
 
-        $calendarDays = \App\Models\Calender::where('date_off', '>=', now()->toDateString()) // Filtre : Date >= aujourd'hui
+    // 3. LE PROCHAIN (Pour la carte bleue en haut)
+    $nextMeeting = $todayFuture->first() ?? $otherFuture->first();
+
+    // 4. TOUT L'HISTORIQUE (Pour le modal Archives - avec pagination)
+    $meetings = InformationCustomer::orderBy('meeting_date', 'desc')
+        ->orderBy('meeting_hour', 'desc')
+        ->paginate(20);
+
+    $calendarDays = Calender::where('date_off', '>=', $todayStr)
         ->orderBy('date_off', 'asc')
         ->get();
 
-        return view('admin.planning', compact('meetings', 'nextMeeting', 'calendarDays'));
+    return view('admin.planning', compact('meetings', 'nextMeeting', 'calendarDays', 'todayFuture', 'otherFuture'));
     }
 
     public function storeCalendar(Request $request)

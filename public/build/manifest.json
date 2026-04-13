@@ -8,7 +8,7 @@
     "src": "node_modules/bootstrap-icons/font/fonts/bootstrap-icons.woff2"
   },
   "resources/css/app.css": {
-    "file": "assets/app-Ddfmo96D.css",
+    "file": "assets/app-DdcCroRE.css",
     "src": "resources/css/app.css",
     "isEntry": true,
     "name": "app",
@@ -23,9 +23,15 @@
     "isEntry": true
   },
   "resources/js/audit-form.js": {
-    "file": "assets/audit-form-DxRP6Y-F.js",
+    "file": "assets/audit-form-B6To7zRR.js",
     "name": "audit-form",
     "src": "resources/js/audit-form.js",
+    "isEntry": true
+  },
+  "resources/js/blog-editor.js": {
+    "file": "assets/blog-editor-q2lGOLbP.js",
+    "name": "blog-editor",
+    "src": "resources/js/blog-editor.js",
     "isEntry": true
   }
 }

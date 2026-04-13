@@ -1,6 +1,10 @@
 let currentStep = 1;
 let formDataStorage = {};
 
+let isEmailVerified = false;
+let isOtpSent = false;
+let timerInterval; // Référence globale pour pouvoir l'arrêter proprement
+
 document.addEventListener('DOMContentLoaded', function() {
     // 1. SELECTEURS & INIT
     const inputDate = document.getElementById('meeting_date');
@@ -11,7 +15,6 @@ document.addEventListener('DOMContentLoaded', function() {
     const btnPrev = document.getElementById('prevBtn');
     let errorBanner = document.getElementById('error-banner');
     
-    // Correction : On cible la nouvelle classe de ton design premium
     const auditCard = document.querySelector('.audit-card-premium');
 
     if (!grid || !btnNext || !inputDate) return;
@@ -24,6 +27,7 @@ document.addEventListener('DOMContentLoaded', function() {
     let currentNavDate = new Date();
     let offDays = [];
 
+    // Chargement des jours fériés/off
     fetch('/api/off-days')
         .then(res => res.json())
         .then(data => { 
@@ -31,19 +35,17 @@ document.addEventListener('DOMContentLoaded', function() {
             renderCalendar(currentNavDate); 
         });
 
-    // 2. BANDEAU D'ERREUR (Vérifie s'il existe déjà dans le HTML avant de le créer)
+    // 2. BANDEAU D'ERREUR (Création si inexistant)
     if (!errorBanner) {
         errorBanner = document.createElement('div');
         errorBanner.id = "error-banner";
-        // On utilise les classes qui matchent ton CSS final
-        errorBanner.className = "mb-4 animate-in"; 
+        errorBanner.className = "mb-4 animate-in hidden text-red-400 bg-red-400/10 p-3 rounded-lg border border-red-400/20"; 
         errorBanner.innerHTML = `
             <div class="flex items-center gap-3">
                 <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
                 <span class="font-medium text-xs">Veuillez remplir tous les champs obligatoires (*).</span>
             </div>`;
         
-        // AU LIEU DE PREPEND : On l'insère juste avant la zone des boutons
         const buttonContainer = document.querySelector('.flex.justify-between.items-center.mt-8');
         if (buttonContainer) {
             buttonContainer.parentNode.insertBefore(errorBanner, buttonContainer);
@@ -52,7 +54,185 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    // 3. GESTION DU CALENDRIER
+    // 3. LOGIQUE OTP & TIMER (FONCTIONS CORRIGÉES)
+
+    function startResendTimer() {
+        const btn = document.getElementById('resend-otp-btn');
+        const timerSpan = document.getElementById('resend-timer');
+        if(!btn || !timerSpan) return;
+
+        let timeLeft = 60; // Variable locale pour le décompte réel
+        btn.disabled = true;
+        btn.classList.add('opacity-50', 'cursor-not-allowed');
+        
+        clearInterval(timerInterval); // On nettoie l'ancien timer
+        timerInterval = setInterval(() => {
+            timeLeft--;
+            timerSpan.textContent = `(${timeLeft}s)`;
+            
+            if (timeLeft <= 0) {
+                clearInterval(timerInterval);
+                btn.disabled = false;
+                btn.classList.remove('opacity-50', 'cursor-not-allowed');
+                timerSpan.textContent = "";
+            }
+        }, 1000);
+    }
+
+    function sendOtpProcess() {
+        const emailInput = document.getElementById('email_input');
+        const email = emailInput ? emailInput.value : '';
+        const btnText = document.getElementById('nextBtnText');
+        
+        if (!email) {
+            alert("Veuillez saisir votre email.");
+            return;
+        }
+
+        btnText.textContent = "ENVOI...";
+        btnNext.disabled = true;
+
+        fetch('/send-otp', {
+            method: 'POST',
+            headers: { 
+                'Content-Type': 'application/json', 
+                'X-CSRF-TOKEN': document.querySelector('input[name="_token"]').value 
+            },
+            body: JSON.stringify({ email: email })
+        })
+        .then(res => res.json())
+        .then(data => {
+            btnNext.disabled = false;
+            btnText.textContent = "Suivant";
+            if (data.success) {
+                isOtpSent = true;
+                startResendTimer();
+            } else {
+                alert(data.message || "Erreur lors de l'envoi");
+            }
+        })
+        .catch(() => {
+            btnNext.disabled = false;
+            btnText.textContent = "Suivant";
+            alert("Erreur de connexion au serveur.");
+        });
+    }
+
+    // --- DANS TA FONCTION verifyOtpProcess ---
+    function verifyOtpProcess() {
+        const codeInput = document.getElementById('otp_input');
+        const code = codeInput.value.replace(/\s/g, ''); 
+        const errorMsg = document.getElementById('otp-error');
+        const btnText = document.getElementById('nextBtnText');
+        
+        if (code.length !== 6) {
+            if(errorMsg) {
+                errorMsg.textContent = "Veuillez saisir les 6 caractères du code.";
+                errorMsg.classList.remove('hidden');
+            }
+            codeInput.classList.add('animate-shake', 'border-red-500');
+            setTimeout(() => codeInput.classList.remove('animate-shake'), 500);
+            return;
+        }
+
+        btnNext.disabled = true;
+        btnText.textContent = "VÉRIFICATION...";
+
+        fetch('/verify-otp', {
+            method: 'POST',
+            headers: { 
+                'Content-Type': 'application/json', 
+                'X-CSRF-TOKEN': document.querySelector('input[name="_token"]').value 
+            },
+            body: JSON.stringify({ code: code })
+        })
+        .then(res => res.json())
+        .then(data => {
+            btnNext.disabled = false;
+            btnText.textContent = "Suivant";
+
+            if (data.success) {
+                isEmailVerified = true; // On valide l'état
+                if(errorMsg) errorMsg.classList.add('hidden');
+                codeInput.classList.replace('border-red-500', 'border-green-500');
+                
+                // INDISPENSABLE : On force le passage à l'étape suivante ici !
+                changeStep(1); 
+            } else {
+                isEmailVerified = false;
+                if(errorMsg) {
+                    errorMsg.textContent = "Code incorrect. Veuillez réessayer.";
+                    errorMsg.classList.remove('hidden');
+                }
+                codeInput.classList.add('animate-shake', 'border-red-500');
+                setTimeout(() => codeInput.classList.remove('animate-shake'), 500);
+            }
+        })
+        .catch(err => {
+            btnNext.disabled = false;
+            btnText.textContent = "Suivant";
+            if (errorMsg) {
+                errorMsg.textContent = "Code incorrect. Veuillez réessayer.";
+                errorMsg.classList.remove('hidden');
+            }
+            console.error("Erreur Fetch:", err);
+        });
+    }
+
+    // 4. GESTION DU BOUTON SUIVANT (LOGIQUE PRINCIPALE)
+    btnNext.addEventListener('click', function(e) {
+        e.preventDefault();
+
+        const stepContainer = document.querySelector(`.form-step[data-step="${currentStep}"]`);
+        const fields = stepContainer.querySelectorAll('input, select, textarea');
+        fields.forEach(field => {
+            if (field.type === 'radio') {
+                if (field.checked) formDataStorage[field.name] = field.value;
+            } else if (field.name) {
+                formDataStorage[field.name] = field.value;
+            }
+        });
+        
+        // Etape 2 -> 3 (Contact vers OTP)
+        if (currentStep === 2) {
+            if (validateCurrentStep()) {
+                sendOtpProcess();
+                changeStep(1);
+            }
+            return; // Bloque le changement d'étape automatique
+        }
+
+        // Etape 3 -> 4 (Vérification OTP)
+        if (currentStep === 3) {
+            if (!isEmailVerified) {
+                verifyOtpProcess();
+            } else {
+                changeStep(1); // Permet de passer à la suite si on clique à nouveau
+            }
+            return; 
+        }
+
+        // Autres étapes normales
+        if (validateCurrentStep()) {
+            const stepContainer = document.querySelector(`.form-step[data-step="${currentStep}"]`);
+            const fields = stepContainer.querySelectorAll('input, select, textarea');
+            fields.forEach(field => {
+                if (field.type === 'radio') {
+                    if (field.checked) formDataStorage[field.name] = field.value;
+                } else if (field.name) {
+                    formDataStorage[field.name] = field.value;
+                }
+            });
+
+            if (currentStep === 5) {
+                sendDataToDatabase();
+            } else {
+                changeStep(1);
+            }
+        }
+    });
+
+    // 5. GESTION DU CALENDRIER & SLOTS (IDENTIQUE)
     grid.addEventListener('click', function(e) {
         const dayDiv = e.target.closest('.cal-day');
         if (dayDiv && !dayDiv.classList.contains('empty') && !dayDiv.classList.contains('disabled')) {
@@ -85,6 +265,10 @@ document.addEventListener('DOMContentLoaded', function() {
         const today = new Date();
         today.setHours(0, 0, 0, 0);
 
+        const minDate = new Date();
+        minDate.setDate(today.getDate() + 2); 
+        minDate.setHours(0, 0, 0, 0);
+
         for (let x = 0; x < offset; x++) {
             grid.insertAdjacentHTML('beforeend', '<div class="cal-day empty opacity-0"></div>');
         }
@@ -97,10 +281,20 @@ document.addEventListener('DOMContentLoaded', function() {
             const checkDate = new Date(year, month, i);
             const fullDateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(i).padStart(2, '0')}`;
 
-            if (checkDate < today || checkDate.getDay() === 0 || checkDate.getDay() === 6 || offDays.includes(fullDateStr)) {
+            // le design de la case du jour
+            const now = new Date();
+            const isToday = checkDate.getDate() === now.getDate() && 
+                            checkDate.getMonth() === now.getMonth() && 
+                            checkDate.getFullYear() === now.getFullYear();
+
+            if (isToday) {
+                dayDiv.classList.add('is-today');
+            }
+
+            if (checkDate < minDate || checkDate.getDay() === 0 || checkDate.getDay() === 6 || offDays.includes(fullDateStr)) {
                 dayDiv.classList.add('disabled', 'opacity-20');
                 dayDiv.style.pointerEvents = 'none';
-            }else {
+            } else {
                 fetch(`/api/has-slots?date=${fullDateStr}`)
                     .then(res => res.json())
                     .then(data => {
@@ -141,12 +335,12 @@ document.addEventListener('DOMContentLoaded', function() {
             });
     }
 
+    // 6. VALIDATION & NAVIGATION
     function validateCurrentStep() {
         const stepContainer = document.querySelector(`.form-step[data-step="${currentStep}"]`);
         const banner = document.getElementById('error-banner');
         let isValid = true;
 
-        // 1. Validation Inputs, Selects, Textareas (sauf radios)
         const inputs = stepContainer.querySelectorAll('input[required]:not([type="radio"]), select[required], textarea[required]');
         inputs.forEach(input => {
             if (!input.value || !input.value.trim()) {
@@ -157,161 +351,86 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
 
-        if (currentStep === 1 && !isValid) {
-            document.querySelector('.calendar-wrapper').classList.add('animate-shake', 'border-red-500/50');
-            setTimeout(() => {
-                document.querySelector('.calendar-wrapper').classList.remove('animate-shake');
-            }, 500);
-        }
+        if (currentStep === 1 && (!inputDate.value || !inputHour.value)) isValid = false;
 
-        // 2. Validation Radios (Objectifs)
         const radioRequired = stepContainer.querySelector('input[type="radio"][required]');
         if (radioRequired) {
             const name = radioRequired.name;
             const isChecked = stepContainer.querySelector(`input[name="${name}"]:checked`);
-            const cards = stepContainer.querySelectorAll('.objective-content');
+            const allCards = stepContainer.querySelectorAll('.objective-card')
             
             if (!isChecked) {
-                cards.forEach(c => c.classList.add('invalid-card'));
                 isValid = false;
+                allCards.forEach(card => {
+                    card.classList.add('error-border'); // On utilise la classe CSS créée plus haut
+                    card.classList.add('animate-shake'); // Optionnel : petit effet visuel
+                });
             } else {
-                cards.forEach(c => c.classList.remove('invalid-card'));
+                allCards.forEach(card => {
+                    card.classList.remove('error-border');
+                    card.classList.remove('animate-shake');
+                });
             }
         }
 
-        // 3. Validation spéciale Étape 1
-        if (currentStep === 1 && (!inputDate.value || !inputHour.value)) {
-            isValid = false;
-        }
-
-
-
-        // Affichage de l'alerte
         if (!isValid) {
             banner.classList.remove('hidden');
-            banner.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            // Petit effet de secousse pour attirer l'oeil
             banner.classList.add('animate-shake');
             setTimeout(() => banner.classList.remove('animate-shake'), 500);
         } else {
             banner.classList.add('hidden');
         }
-
         return isValid;
     }
 
-    if (typeof formDataStorage === 'undefined') {
-        var formDataStorage = {};
+    function changeStep(direction) {
+        const steps = document.querySelectorAll('.form-step');
+        const progressItems = document.querySelectorAll('.step-item');
+        const progressLine = document.getElementById('progress-line');
+
+        steps[currentStep - 1].classList.remove('active');
+        currentStep += direction;
+        steps[currentStep - 1].classList.add('active');
+
+        btnPrev.classList.toggle('hidden', currentStep === 1);
+        
+        const nextBtnText = document.getElementById('nextBtnText');
+        nextBtnText.textContent = (currentStep === 5) ? 'Confirmer le RDV' : 'Suivant';
+
+        const progressPercent = ((currentStep - 1) / (steps.length - 1)) * 100;
+        if(progressLine) progressLine.style.width = `${progressPercent}%`;
+
+        progressItems.forEach((item, idx) => {
+            const circle = item.querySelector('.step-circle');
+            if (idx < currentStep) {
+                circle.classList.add('bg-blue-600', 'border-blue-500', 'text-white');
+                circle.classList.remove('text-white/30');
+            } else {
+                circle.classList.remove('bg-blue-600', 'border-blue-500', 'text-white');
+                circle.classList.add('text-white/30');
+            }
+        });
+
+        window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
-    
-   btnNext.addEventListener('click', function(e) {
-        e.preventDefault();
-
-        // On réinitialise l'erreur visuellement
-        const banner = document.getElementById('error-banner');
-        banner.classList.add('hidden');
-        
-        const stepContainer = document.querySelector(`.form-step[data-step="${currentStep}"]`);
-        if (!stepContainer) return;
-
-        // --- AJOUT : On réinitialise l'affichage de l'erreur au clic ---
-        const errorBanner = document.getElementById('error-banner');
-        if (errorBanner) errorBanner.classList.add('hidden');
-        // --------------------------------------------------------------
-
-        if (validateCurrentStep()) {
-            // --- 1. RÉCUPÉRATION (On le fait TOUJOURS, même à la fin) ---
-            const fields = stepContainer.querySelectorAll('input, select, textarea');
-            fields.forEach(field => {
-                if (field.type === 'radio') {
-                    if (field.checked) formDataStorage[field.name] = field.value;
-                } else if (field.name) {
-                    formDataStorage[field.name] = field.value;
-                }
-            });
-
-            // --- 2. LOGIQUE DE SORTIE ---
-            if (currentStep === 4) {
-                // On cache l'alerte si elle était affichée
-                const alertObj = document.getElementById('alert-objectifs');
-                if(alertObj) alertObj.classList.add('hidden');
-                
-                // On lance l'envoi final avec TOUTES les données incluses
-                sendDataToDatabase();
-            } else {
-                changeStep(1);
-            }
-        } else {
-            // --- GESTION DE L'ALERTE ---
-            banner.classList.remove('hidden');
-            banner.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            
-            if (currentStep === 4) {
-                const alertObj = document.getElementById('alert-objectifs');
-                if(alertObj) alertObj.classList.remove('hidden');
-            }
-        }
-    });
-
+    // Bouton Précédent
     btnPrev.addEventListener('click', (e) => {
         e.preventDefault();
         if (currentStep > 1) changeStep(-1);
     });
 
-    function changeStep(direction) {
-        const steps = document.querySelectorAll('.form-step');
-        const totalSteps = steps.length; // On compte dynamiquement (ex: 4)
-
-        // --- AJOUT : On cache l'erreur dès qu'on change d'étape ---
-        const errorBanner = document.getElementById('error-banner');
-        if (errorBanner) errorBanner.classList.add('hidden');
-
-        // 1. Cacher l'étape actuelle
-        steps[currentStep - 1].classList.remove('active');
-        
-        // 2. Changer d'index
-        currentStep += direction;
-        
-        // 3. Afficher la nouvelle étape
-        steps[currentStep - 1].classList.add('active');
-        
-        // --- MISE À JOUR BARRE DE PROGRESSION ---
-        const progressLine = document.getElementById('progress-line');
-        if (progressLine) {
-            // On calcule le pourcentage par rapport au nombre réel d'étapes
-            const percent = ((currentStep - 1) / (totalSteps - 1)) * 100;
-            progressLine.style.width = `${percent}%`;
-        }
-
-        // --- MISE À JOUR DES CERCLES (Étapes en haut) ---
-        document.querySelectorAll('.step-item').forEach(item => {
-            const s = parseInt(item.dataset.step);
-            item.classList.toggle('active', s === currentStep);
-            const circle = item.querySelector('.step-circle');
-            if (circle) {
-                // S'allume si l'étape est atteinte ou dépassée
-                circle.classList.toggle('!border-blue-500', s <= currentStep);
-                circle.classList.toggle('!text-white', s <= currentStep);
-                circle.classList.toggle('bg-blue-600', s <= currentStep); // Optionnel : fond bleu
-            }
+    // Bouton de renvoi OTP
+    const resendBtn = document.getElementById('resend-otp-btn');
+    if(resendBtn) {
+        resendBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();   // Empêche l'événement de "remonter" vers le formulaire
+            sendOtpProcess();
         });
-        
-        // --- GESTION DES BOUTONS ---
-        // Cacher "Précédent" si on est au début
-        btnPrev.classList.toggle('hidden', currentStep === 1);
-        
-        // Changer le texte du bouton "Suivant" en "Confirmer" si c'est la FIN
-        const isLastStep = (currentStep === totalSteps);
-        btnNext.querySelector('span').textContent = isLastStep ? "Confirmer le RDV" : "Suivant";
-
-        // --- SCROLL AUTOMATIQUE ---
-        // On remonte un peu au dessus de la carte pour bien voir le titre sur mobile
-        const scrollTarget = auditCard.offsetTop - 50;
-        window.scrollTo({ top: scrollTarget, behavior: 'smooth' });
     }
 
-    // Navigation mois
+    // Navigation mois calendrier
     document.querySelectorAll('.btn-cal-nav').forEach((btn, index) => {
         btn.onclick = (e) => {
             e.preventDefault();
@@ -320,14 +439,8 @@ document.addEventListener('DOMContentLoaded', function() {
         };
     });
 
-    renderCalendar(currentNavDate);
-
-
+    // 7. ENVOI FINAL & MODAL
     function sendDataToDatabase() {
-        // Affichage pour le debug
-        console.log("Envoi des données...", formDataStorage);
-
-        // On récupère le token CSRF pour Laravel
         const token = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') 
                     || document.querySelector('input[name="_token"]')?.value;
 
@@ -343,16 +456,13 @@ document.addEventListener('DOMContentLoaded', function() {
         .then(response => response.json())
         .then(data => {
             if (data.success) {
-                // Redirection ou message de succès
                 showSuccessModal();
             } else {
                 alert("Erreur: " + data.message);
             }
         })
-        .catch(error => {
-            console.error('Erreur:', error);
+        .catch(() => {
             alert("Une erreur est survenue lors de l'envoi.");
-            if (btnNext) btnNext.disabled = false;
         });
     }
 
@@ -360,29 +470,19 @@ document.addEventListener('DOMContentLoaded', function() {
         const modal = document.getElementById('success-modal');
         const card = document.getElementById('modal-card');
         const countdownEl = document.getElementById('countdown-text');
-        
-        // Sécurité : Si la modale n'est pas dans le HTML, on alerte et on redirige
         if (!modal || !card) {
-            console.warn("Éléments de la modale manquants, redirection directe.");
             window.location.href = '/';
             return;
         }
-
-        // 1. Afficher le conteneur principal
         modal.classList.remove('hidden');
-        
-        // 2. Animation d'entrée (petit délai pour que le navigateur voit le retrait de 'hidden')
         setTimeout(() => {
             card.classList.remove('scale-95', 'opacity-0');
             card.classList.add('scale-100', 'opacity-100');
         }, 50);
-
-        // 3. Gestion du compte à rebours
         let seconds = 15;
         const timer = setInterval(() => {
             seconds--;
             if (countdownEl) countdownEl.textContent = seconds;
-            
             if (seconds <= 0) {
                 clearInterval(timer);
                 window.location.href = '/';
@@ -390,4 +490,14 @@ document.addEventListener('DOMContentLoaded', function() {
         }, 1000);
     }
 
+    document.querySelectorAll('input[name="rdv_objective"]').forEach(radio => {
+        radio.addEventListener('change', function() {
+            const stepContainer = this.closest('.form-step');
+            const allCards = stepContainer.querySelectorAll('.objective-card');
+            const banner = document.getElementById('error-banner');
+            
+            allCards.forEach(card => card.classList.remove('error-border'));
+            if (banner) banner.classList.add('hidden');
+        });
+    });
 });

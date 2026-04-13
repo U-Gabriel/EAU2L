@@ -5,15 +5,18 @@
     
     @php
         $now = now();
-        // On sépare pour gérer l'affichage "Aujourd'hui" même si vide
+        $today = \Carbon\Carbon::today();
+
+        // 1. Aujourd'hui : Date est aujourd'hui ET l'heure est dans le futur
         $todayFuture = $meetings->filter(function($m) use ($now) {
-            return \Carbon\Carbon::parse($m->meeting_date)->isToday() && 
-                   \Carbon\Carbon::parse($m->meeting_hour)->isAfter($now);
+            $meetingDateTime = \Carbon\Carbon::parse($m->meeting_date . ' ' . $m->meeting_hour);
+            return $meetingDateTime->isToday() && $meetingDateTime->isAfter($now);
         });
 
-        $otherFuture = $meetings->filter(function($m) use ($now) {
-            return \Carbon\Carbon::parse($m->meeting_date)->isAfter($now) && !\Carbon\Carbon::parse($m->meeting_date)->isToday();
-        });
+        // 2. Prochainement : La date est strictement après aujourd'hui
+        $otherFuture = $meetings->filter(function($m) use ($today) {
+            return \Carbon\Carbon::parse($m->meeting_date)->isAfter($today);
+        })->sortBy('meeting_date'); // On trie par date pour avoir le plus proche en haut
     @endphp
 
     {{-- HEADER --}}

@@ -14,12 +14,19 @@ use App\Http\Controllers\Admin\PlanningController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\PageController;
 use App\Http\Controllers\Admin\StatsController;
+use App\Http\Controllers\NewsletterController;
+use App\Http\Controllers\AuditController;
 
 
 
 Route::get('/', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 Route::get('/about', [App\Http\Controllers\AboutController::class, 'index'])->name('about');
 Route::get('/contact', [App\Http\Controllers\ContactController::class, 'index'])->name('contact');
+Route::get('/insights', [App\Http\Controllers\BlogController::class, 'index'])->name('blog.index');
+
+// Route pour voir un article complet
+Route::get('/insights/{id}', [App\Http\Controllers\BlogController::class, 'show'])->name('blog.show');
+Route::post('/newsletter/subscribe', [NewsletterController::class, 'store'])->name('newsletter.store');
 
 // Route pour les mentions légales
 Route::get('/mentions-legales', function () {
@@ -31,6 +38,12 @@ Route::get('/confidentialite', function () {
     return view('confidentialite');
 });
 
+// --- SYSTÈME DE VÉRIFICATION OTP ---
+// Route pour envoyer le mail avec le code
+Route::post('/send-otp', [ContactController::class, 'sendOtp'])->name('otp.send');
+
+// Route pour vérifier si le code saisi par l'utilisateur est correct
+Route::post('/verify-otp', [ContactController::class, 'verifyOtp'])->name('otp.verify');
 
 // --- AUTHENTIFICATION ---
 $secretPath = 'hlqzfhjzm546FG65ERF';
@@ -67,6 +80,36 @@ Route::middleware(['auth'])->prefix($secretPath . '/admin')->group(function () {
 
     Route::get('/modifications_pages', [PageController::class, 'index'])->name('admin.modifications');
     Route::post('/modifications_pages/block/{id}', [PageController::class, 'updateBlock'])->name('admin.block.update');
+
+
+
+    Route::post('/admin/block/update/{id}', [AuditController::class, 'updateBlock'])->name('admin.block.updateMail');
+
+    // Route spécifique pour les logos
+    Route::post('/modifications_pages/logo/{id}', [PageController::class, 'updateLogo'])->name('admin.logo.update');
+
+    // Route dédiée pour les couleurs
+    Route::post('/admin/block/update-color/{id}', [PageController::class, 'updateColor'])->name('admin.block.updateColor');
+
+    // Liste des articles
+    Route::get('/modifications_pages/blog', [PageController::class, 'blogIndex'])->name('admin.blog.index');
+
+    // Formulaire de création
+    Route::get('/modifications_pages/blog/create', [PageController::class, 'blogCreate'])->name('admin.blog.create');
+
+    Route::post('/admin/blog/newsletter/{id}', [PageController::class, 'sendNewsletter'])->name('admin.blog.newsletter');
+
+    Route::get('/modifications_pages/blog/edit/{id}', [PageController::class, 'blogEdit'])->name('admin.blog.edit');
+
+    Route::put('/modifications_pages/blog/update/{id}', [PageController::class, 'update'])->name('admin.blog.update');
+    
+    Route::delete('/modifications_pages/blog/delete/{id}', [PageController::class, 'blogDestroy'])->name('admin.blog.destroy');
+
+    // Action de sauvegarde
+    Route::post('/modifications_pages/blog/store', [PageController::class, 'blogStore'])->name('admin.blog.store');
+
+    // Action pour l'upload d'images via Quill (AJAX)
+    Route::post('/modifications_pages/blog/upload-image', [PageController::class, 'blogUploadImage'])->name('admin.blog.upload_image');
 
     Route::post('/calendar/store', [PlanningController::class, 'storeCalendar'])->name('admin.calendar.store');
     Route::delete('/calendar/destroy/{id}', [PlanningController::class, 'destroyCalendar'])->name('admin.calendar.destroy');

@@ -12,13 +12,14 @@ class HomeController extends Controller
         $page = Page::where('slug', 'home')
                     ->with(['blocks' => function($query) {
                         $query->where('is_active', true)
+                            ->where('is_hidden', false)
                             ->orderBy('position', 'asc');
                     }])
                     ->firstOrFail();
 
         $beforeHome = $page->blocks->where('type', 'before_home')->first();
 
-        $videoBlock = $page->blocks()->where('type', 'video_presentation')->first();
+        $videoBlock = $page->blocks->where('type', 'video_presentation')->first();
 
         // On récupère la collection des objectifs (plusieurs possibles)
         $goals = $page->blocks->where('type', 'goals');

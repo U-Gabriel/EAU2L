@@ -1,11 +1,16 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
+    @php
+        $logoIcon = DB::table('page_blocks')->where('id_block', 49)->first();
+        
+        $pathIcon = $logoIcon ? ltrim($logoIcon->image_path, '/') : 'images/logo_favicon.png';
+    @endphp
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EAU2L - @yield('title', 'Administration')</title>
-    <link rel="icon" type="image/png" href="{{ asset('images/logo4.png') }}">
-    <link rel="apple-touch-icon" href="{{ asset('images/logo4.png') }}">
+    <title>Armature - @yield('title', 'Administration')</title>
+    <link rel="icon" type="image/png"  href="{{ asset($pathIcon) }}?v={{ time() }}">
+    <link rel="apple-touch-icon"  href="{{ asset($pathIcon) }}?v={{ time() }}">
     
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -38,7 +43,7 @@
                             </div>
                             <div class="leading-none">
                                 <span class="text-white font-extrabold text-xl tracking-tighter block uppercase">Admin</span>
-                                <span class="text-[10px] text-blue-500 font-black uppercase tracking-[0.2em]">EAU2L Panel</span>
+                                <span class="text-[10px] text-blue-500 font-black uppercase tracking-[0.2em]">Armature Panel</span>
                             </div>
                         </a>
                         

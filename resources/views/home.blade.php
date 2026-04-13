@@ -2,6 +2,52 @@
 
 @section('title', 'Accueil')
 
+@php
+    $theme = DB::table('page_blocks')->where('id_page', 6)->where('type', 'like', 'color_%')->get()->pluck('content', 'type');
+    // Fallbacks pour compatibilité
+    $primary = $theme['color_primary'] ?? '#3b82f6';
+    $bg = $theme['color_bg_dark'] ?? '#020617';
+    $card = $theme['color_bg_card'] ?? '#1a1a1c';
+    $text = $theme['color_text_light'] ?? '#ffffff';
+    $gray = $theme['color_text_gray'] ?? '#94a3b8';
+    $border = $theme['color_border'] ?? 'rgba(255,255,255,0.1)';
+@endphp
+
+<style>
+    :root {
+        --primary: {{ $primary }};
+        --bg: {{ $bg }};
+        --card: {{ $card }};
+        --text: {{ $text }};
+        --gray: {{ $gray }};
+        --border: {{ $border }};
+    }
+
+    /* Application globale */
+    body, .main-content, section { background-color: var(--bg) !important; color: var(--text); }
+    
+    /* Cartes et Inputs (Contact & Blog) */
+    .card, .premium-card, .contact-form, .bg-white\/5, .discovery-card { 
+        background-color: var(--card) !important; 
+        border: 1px solid var(--border) !important; 
+    }
+
+    /* Typographie */
+    h1, h2, h3, .text-white { color: var(--text) !important; }
+    p, .text-gray-400, .author-role { color: var(--gray) !important; }
+
+    /* Actions */
+    .btn-primary, .bg-blue-600, .btn-discovery-premium:hover { 
+        background-color: var(--primary) !important; 
+        border-color: var(--primary) !important;
+        color: white !important;
+    }
+    .text-blue-500, .step-number, .quote-mark { color: var(--primary) !important; }
+
+    /* Bordures de séparation */
+    hr, .border-b, .border-white\/10 { border-color: var(--border) !important; }
+</style>
+
 @section('content')
 
     @php
@@ -60,6 +106,26 @@
                             <i class="bi bi-chevron-right"></i>
                         </a>
                     </div>
+
+                    <section class="insights-discovery-section">
+                        <div class="container">
+                            <div class="discovery-card" data-aos="fade-up">
+                                <div class="discovery-grid">
+                                    <div class="discovery-text">
+                                        <span class="discovery-badge">Expertise & Analyses</span>
+                                        <h3 class="discovery-title">Explorez notre veille stratégique</h3>
+                                        <p class="discovery-subtitle">Décryptages et leviers de croissance pour les dirigeants.</p>
+                                    </div>
+                                    <div class="discovery-action">
+                                        <a href="{{ url('/insights') }}" class="btn-discovery-premium">
+                                            <span>Consulter nos analyses</span>
+                                            <i class="bi bi-arrow-right"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
                 </div>
             </div>
         </section>
@@ -212,5 +278,109 @@
         </div>
     </section>
     @endif
+
+    <style>
+        .insights-discovery-section {
+            padding: 60px 0;
+            background: #020617;
+        }
+
+        .discovery-card {
+            background: linear-gradient(135deg, rgba(30, 41, 59, 0.3) 0%, rgba(15, 23, 42, 0.5) 100%);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            padding: 40px;
+            transition: transform 0.3s ease, border-color 0.3s ease;
+        }
+
+        .discovery-card:hover {
+            border-color: rgba(59, 130, 246, 0.3);
+        }
+
+        .discovery-grid {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 40px;
+        }
+
+        .discovery-badge {
+            color: #3b82f6;
+            text-transform: uppercase;
+            font-size: 0.7rem;
+            font-weight: 800;
+            letter-spacing: 2px;
+            margin-bottom: 12px;
+            display: block;
+        }
+
+        .discovery-title {
+            color: #ffffff;
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+            letter-spacing: -0.5px;
+        }
+
+        .discovery-subtitle {
+            color: #94a3b8;
+            font-size: 1rem;
+            margin: 0;
+            opacity: 0.8;
+        }
+
+        /* Le Bouton Premium */
+        .btn-discovery-premium {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            background: #ffffff; /* Bouton blanc pour trancher radicalement */
+            color: #020617;
+            padding: 16px 32px;
+            border-radius: 12px;
+            font-weight: 700;
+            text-decoration: none;
+            white-space: nowrap;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .btn-discovery-premium:hover {
+            background: #3b82f6;
+            color: #ffffff;
+            transform: translateX(5px);
+        }
+
+        .btn-discovery-premium i {
+            font-size: 1.2rem;
+            transition: transform 0.3s ease;
+        }
+
+        .btn-discovery-premium:hover i {
+            transform: translateX(3px);
+        }
+
+        /* Adaptabilité Mobile */
+        @media (max-width: 992px) {
+            .discovery-grid {
+                flex-direction: column;
+                text-align: center;
+                gap: 30px;
+            }
+            
+            .discovery-card {
+                padding: 40px 25px;
+                margin: 0 15px;
+            }
+
+            .btn-discovery-premium {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .discovery-title {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
 
 @endsection
