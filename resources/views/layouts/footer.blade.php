@@ -51,8 +51,17 @@
             </div>
         </div>
 
+        {{-- ZONE DE RÉFÉRENCEMENT DISCRÈTE --}}
+        <div class="mt-10" style="opacity: 0.02; font-size: 8px; color: #94a3b8; pointer-events: none;">
+            <p>
+                Coach entreprise, consultant trésorerie, gestion financière TPE PME, 
+                optimisation rentabilité, conseil dirigeant, Armature Business, 
+                pilotage entreprise, tygduqfljbvcql
+            </p>
+        </div>
+
         <div class="mt-20 pt-8 border-t border-white/[0.03] flex flex-col md:flex-row justify-between items-center">
-            <span class="text-gray-600 text-[10px] uppercase tracking-[0.2em]">© {{ date('Y') }} Eau2L Digital</span>
+            <span class="text-gray-600 text-[10px] uppercase tracking-[0.2em]">© {{ date('Y') }} Groupe Armature Business - Tous droits réservés</span>
         </div>
     </div>
 </footer>

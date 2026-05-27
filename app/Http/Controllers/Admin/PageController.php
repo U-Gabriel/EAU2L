@@ -117,7 +117,7 @@ class PageController extends Controller
 
             // Créer le dossier s'il n'existe pas
             if (!File::exists($destination)) {
-                File::makeDirectory($destination, 0775, true);
+                File::makeDirectory($destination, 0775, true, true);
             }
 
             // 3. Création d'un nom de fichier unique basé sur l'ID et le temps

@@ -22,7 +22,7 @@
                 <p class="text-gray-500 text-sm leading-relaxed font-light">
                     {{ $section['content'] }}
                     @if($loop->last)
-                        Contactez-nous à : <span class="text-red-500 font-bold underline">[À REMPLIR : EMAIL]</span>
+                        Contactez-nous à : <span class="text-red-500 font-bold underline">contact@armaturebusiness.com</span>
                     @endif
                 </p>
             </div>

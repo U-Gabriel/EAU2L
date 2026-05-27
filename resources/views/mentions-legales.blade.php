@@ -21,7 +21,7 @@
                     <p>Le présent site est édité par :</p>
                     <p><strong class="text-white uppercase tracking-tighter">Société :</strong> <span class="text-red-500 font-bold">EAU2L Consulting</span></p>
                     <p><strong class="text-white uppercase tracking-tighter">SIREN :</strong> <span class="text-red-500 font-bold">100129634</span></p>
-                    <p><strong class="text-white uppercase tracking-tighter">Contact :</strong> <span class="text-red-500 font-bold">[À REMPLIR : EMAIL]</span></p>
+                    <p><strong class="text-white uppercase tracking-tighter">Contact :</strong> <span class="text-red-500 font-bold">contact@armaturebusiness.com</span></p>
                 </div>
             </div>
 
@@ -31,8 +31,8 @@
                 </h2>
                 <div class="space-y-4 text-gray-400 text-sm leading-relaxed">
                     <p>Le site est hébergé techniquement par :</p>
-                    <p><strong class="text-white uppercase tracking-tighter">Hébergeur :</strong> <span class="text-red-500 font-bold">[À REMPLIR : EX: HOSTINGER]</span></p>
-                    <p><strong class="text-white uppercase tracking-tighter">Localisation :</strong> <span class="text-red-500 font-bold">[À REMPLIR : FRANCE / EUROPE]</span></p>
+                    <p><strong class="text-white uppercase tracking-tighter">Hébergeur :</strong> <span class="text-red-500 font-bold">OVHcloud</span></p>
+                    <p><strong class="text-white uppercase tracking-tighter">Localisation :</strong> <span class="text-red-500 font-bold">Strasbourg (SBG) - France</span></p>
                     <p>L'hébergeur assure la sécurité physique et logicielle des serveurs.</p>
                 </div>
             </div>

@@ -6,17 +6,49 @@
         $logoMobileData = DB::table('page_blocks')->where('id_block', 48)->first();
         $logoIcon = DB::table('page_blocks')->where('id_block', 49)->first();
         
-        // On définit un fallback (image par défaut) si rien n'est trouvé en BDD
         $pathPc = $logoPcData ? ltrim($logoPcData->image_path, '/') : 'images/logo_armature.png';
         $pathMobile = $logoMobileData ? ltrim($logoMobileData->image_path, '/') : 'images/logo_armature.png';
-        $pathIcon = $logoIcon ? ltrim($logoIcon->image_path, '/') : 'images/logo_favicon.png';
+        $pathIcon = ($logoIcon && $logoIcon->image_path) ? ltrim($logoIcon->image_path, '/') : 'images/logo_favicon.png';
+
+        // Configuration pour la vignette et le SEO
+        $seoTitle = "Expert en Trésorerie et Rentabilité TPE/PME | Armature Business";
+        $seoDesc = "Optimisez votre gestion financière et boostez la rentabilité de votre entreprise avec Armature Business. Accompagnement stratégique sur mesure.";
+        $currentUrl = url()->current();
+        $vignetteUrl = asset($pathPc);
     @endphp
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Armature Business - @yield('title')</title>
-    <link rel="icon" type="image/png" href="{{ asset($pathIcon) }}?v={{ time() }}" >
-    <link rel="apple-touch-icon" href="{{ asset($pathIcon) }}?v={{ time() }}">
+    
+    {{-- SEO DE BASE --}}
+   <title>Armature Business - @yield('title')</title>
+    <meta name="description" content="@yield('meta_description', 'Coach pour entreprise spécialisé en gestion de trésorerie et rentabilité. Armature Business accompagne les dirigeants de TPE/PME.')">
+    
+    {{-- MOTS CLÉS (Pour certains moteurs et le classement interne) --}}
+    <meta name="keywords" content="coach, entreprise, consultant, trésorerie, consultant trésorerie, gestion financière, TPE, PME, optimisation rentabilité, conseil dirigeant, Armature Business, pilotage entreprise, Coach financier entreprise, Accompagnement dirigeant PME, tygduqfljbvcql">
+    <!--<meta name="description" content="@yield('meta_description', $seoDesc)">-->
+    <link rel="canonical" href="{{ $currentUrl }}">
+
+    {{-- VIGNETTE GOOGLE / LINKEDIN / FACEBOOK (Open Graph) --}}
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="{{ $currentUrl }}">
+    <meta property="og:title" content="Armature Business - @yield('title')">
+    <meta property="og:description" content="{{ $seoDesc }}">
+    <meta property="og:image" content="{{ $vignetteUrl }}">
+    <meta property="og:image:alt" content="Logo Armature Business">
+
+    {{-- TWITTER CARD --}}
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Armature Business - @yield('title')">
+    <meta name="twitter:description" content="{{ $seoDesc }}">
+    <meta name="twitter:image" content="{{ $vignetteUrl }}">
+
+    <link rel="icon" type="image/png" href="{{ asset($pathIcon) }}">
+    <link rel="shortcut icon" href="{{ asset($pathIcon) }}">
+    <link rel="apple-touch-icon" href="{{ asset($pathIcon) }}">
+    
     <link rel="stylesheet" href="{{ asset('css/bootstrap.min.css') }}">
+    
     <style>
         /* STYLE DU PRELOADER PREMIUM */
         #preloader {
@@ -25,7 +57,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: #020617; /* Ton bleu nuit profond */
+            background: #020617; 
             z-index: 10000;
             display: flex;
             flex-direction: column;
@@ -36,19 +68,9 @@
 
         .preloader-bundle {
             text-align: center;
-            width: 250px; /* Largeur de la ligne */
+            width: 250px;
         }
 
-        .preloader-logo {
-            width: 180px;
-            height: auto;
-            margin-bottom: 25px;
-            opacity: 0;
-            transform: translateY(10px);
-            animation: fadeInLogo 0.8s forwards ease-out;
-        }
-
-        /* LA LIGNE DE CHARGEMENT */
         .loader-line-container {
             width: 100%;
             height: 2px;
@@ -61,13 +83,9 @@
         .loader-line-progress {
             width: 0;
             height: 100%;
-            background: #3b82f6; /* Ton bleu stratégique */
+            background: #3b82f6; 
             box-shadow: 0 0 15px rgba(59, 130, 246, 0.5);
             animation: fillLine 2s infinite cubic-bezier(0.65, 0, 0.35, 1);
-        }
-
-        @keyframes fadeInLogo {
-            to { opacity: 1; transform: translateY(0); }
         }
 
         @keyframes fillLine {
@@ -80,11 +98,11 @@
             opacity: 0;
             visibility: hidden;
         }
-
-        
     </style>
+
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
+
 <body class="font-sans text-gray-900 bg-white">
     <div id="preloader">
         <div class="preloader-bundle">
@@ -93,41 +111,40 @@
             </div>
         </div>
     </div>
-  <header class="navbar-premium" style="height: auto; min-height: 80px; padding: 10px 0;">
-    <nav class="container d-flex align-items-center justify-content-between">
-        
-        <a href="{{ route('home') }}" class="navbar-brand d-flex align-items-center justify-content-center justify-content-lg-start flex-grow-1 flex-lg-grow-0">
-            {{-- LOGO PC : On enlève les contraintes de hauteur fixes de Tailwind --}}
-            <img src="{{ asset($pathPc) }}?v={{ time() }}" 
-                 alt="Logo Armature" 
-                 class="d-none d-lg-block w-auto"
-                 style="max-height: 120px; height: auto; display: block;"> 
 
-            {{-- LOGO MOBILE : On le booste aussi --}}
-            <img src="{{ asset($pathMobile) }}?v={{ time() }}" 
-                 alt="Logo Mobile" 
-                 class="d-block d-lg-none w-auto"
-                 style="max-height: 70px; height: auto;">
-        </a>
+    <header class="navbar-premium" style="height: auto; min-height: 80px; padding: 10px 0;">
+        <nav class="container d-flex align-items-center justify-content-between">
+            <a href="{{ route('home') }}" class="navbar-brand d-flex align-items-center justify-content-center justify-content-lg-start flex-grow-1 flex-lg-grow-0">
+                <img src="{{ asset($pathPc) }}?v={{ time() }}" 
+                     alt="Armature Business - Conseil en gestion de trésorerie TPE PME" 
+                     class="d-none d-lg-block w-auto"
+                     style="max-height: 120px; height: auto; display: block;"> 
 
-        <ul class="nav-links d-none d-lg-flex list-unstyled m-0 align-items-center">
-            <li><a href="{{ route('home') }}" class="{{ request()->routeIs('home') ? 'active' : '' }}">Accueil</a></li>
-            <li><a href="{{ route('home') }}#faq" class="{{ request()->routeIs('about') ? 'active' : '' }}">Qui sommes-nous ?</a></li>
-            <li><a href="{{ route('home') }}#testimonials">Témoignages</a></li>
-            <li><a href="{{ route('home') }}#faq">FAQ</a></li>
-            <li><a href="{{ route('blog.index') }}" class="{{ request()->routeIs('blog.*') ? 'active' : '' }}">Actualités</a></li>
-        </ul>
-
-        <span class="nav-separator d-none d-lg-block"></span>
-
-        <div class="d-none d-lg-block">
-            <a href="{{ route('contact') }}" class="btn-nav">
-                Prendre un rendez-vous
+                <img src="{{ asset($pathMobile) }}?v={{ time() }}" 
+                     alt="Logo Mobile" 
+                     class="d-block d-lg-none w-auto"
+                     style="max-height: 70px; height: auto;">
             </a>
-        </div>
-    </nav>
-</header>
-    <main >
+
+            <ul class="nav-links d-none d-lg-flex list-unstyled m-0 align-items-center">
+                <li><a href="{{ route('home') }}" class="{{ request()->routeIs('home') ? 'active' : '' }}">Accueil</a></li>
+                <li><a href="{{ route('home') }}#faq" class="{{ request()->routeIs('about') ? 'active' : '' }}">Qui sommes-nous ?</a></li>
+                <li><a href="{{ route('home') }}#testimonials">Témoignages</a></li>
+                <li><a href="{{ route('home') }}#faq">FAQ</a></li>
+                <li><a href="{{ route('blog.index') }}" class="{{ request()->routeIs('blog.*') ? 'active' : '' }}">Actualités</a></li>
+            </ul>
+
+            <span class="nav-separator d-none d-lg-block"></span>
+
+            <div class="d-none d-lg-block">
+                <a href="{{ route('contact') }}" class="btn-nav">
+                    Prendre un rendez-vous
+                </a>
+            </div>
+        </nav>
+    </header>
+
+    <main>
         @yield('content')
     </main>
 
@@ -135,16 +152,23 @@
 
     <script src="{{ asset('js/bootstrap.bundle.min.js') }}"></script>
     <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
-    <script>AOS.init();</script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            if (typeof AOS !== 'undefined') {
+                AOS.init();
+            }
+        });
+    </script>
 
     @stack('scripts')
 
     <script>
         window.addEventListener('load', function() {
             const preloader = document.getElementById('preloader');
-            // On laisse un petit délai de 800ms pour que l'animation soit vue
             setTimeout(() => {
-                preloader.classList.add('preloader-hidden');
+                if(preloader) {
+                    preloader.classList.add('preloader-hidden');
+                }
             }, 800);
         });
     </script>

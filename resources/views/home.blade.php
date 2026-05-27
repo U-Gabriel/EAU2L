@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Accueil')
+@section('title', 'Expert en Trésorerie et Rentabilité TPE/PME | Armature Business')
 
 @php
     $theme = DB::table('page_blocks')->where('id_page', 6)->where('type', 'like', 'color_%')->get()->pluck('content', 'type');
@@ -12,6 +12,8 @@
     $gray = $theme['color_text_gray'] ?? '#94a3b8';
     $border = $theme['color_border'] ?? 'rgba(255,255,255,0.1)';
 @endphp
+
+@section('meta_description', 'Optimisez votre gestion financière et boostez la rentabilité de votre entreprise avec Armature Business. Accompagnement stratégique sur mesure pour dirigeants.')
 
 <style>
     :root {
@@ -66,8 +68,13 @@
             </div>
             @endif
 
-            <h1 class="hero-title">
+            <!--<h1 class="hero-title">
                 {!! htmlspecialchars_decode($data->big_text ?? '') !!}
+            </h1>-->
+
+            <h1 class="hero-title">
+                <span class="d-none">Conseil en gestion de trésorerie : </span>
+                {!! htmlspecialchars_decode($data->big_text ?? 'Optimisez votre rentabilité') !!}
             </h1>
             
             <p class="hero-subtitle mx-auto" style="max-width: 700px; opacity: 0.9;">
@@ -152,7 +159,7 @@
                             
                             @if($goal->image_path)
                                 <div class="goal-icon-wrapper">
-                                    <img src="{{ asset($goal->image_path) }}" alt="Icon" class="goal-img">
+                                    <img src="{{ asset($goal->image_path) }}" alt="Coach entreprise - {{ $gData->title }}" class="goal-img">
                                 </div>
                             @endif
 
@@ -383,4 +390,8 @@
         }
     </style>
 
+
+
+
 @endsection
+
