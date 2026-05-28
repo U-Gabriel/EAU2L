@@ -4,10 +4,11 @@
     <div class="max-w-7xl mx-auto px-8">
         <div class="grid grid-cols-1 md:grid-cols-12 gap-12 items-start">
             
+            {{-- BLOC LOGO + DESCRIPTION OPTIMISÉE (VRAI SEO RELATIONNEL) --}}
             <div class="md:col-span-4 flex flex-col items-start space-y-6">
-                <img src="{{ asset('images/logo3.png') }}" alt="Logo" class="h-9 w-auto brightness-110">
+                <img src="{{ asset('images/ARMATURE_Business.png') }}" alt="Armature Business" class="h-3 w-auto brightness-110">
                 <p class="text-gray-400 text-sm leading-relaxed font-light">
-                    Expertise digitale et accompagnement stratégique pour propulser votre croissance vers de nouveaux sommets.
+                    Cabinet de conseil et coach d'entreprise spécialisé pour les TPE et PME. Armature Business vous accompagne en gestion financière, optimisation de trésorerie et pilotage stratégique pour maximiser votre rentabilité.
                 </p>
             </div>
 
@@ -49,15 +50,6 @@
                     </ul>
                 </div>
             </div>
-        </div>
-
-        {{-- ZONE DE RÉFÉRENCEMENT DISCRÈTE --}}
-        <div class="mt-10" style="opacity: 0.02; font-size: 8px; color: #94a3b8; pointer-events: none;">
-            <p>
-                Coach entreprise, consultant trésorerie, gestion financière TPE PME, 
-                optimisation rentabilité, conseil dirigeant, Armature Business, 
-                pilotage entreprise, tygduqfljbvcql
-            </p>
         </div>
 
         <div class="mt-20 pt-8 border-t border-white/[0.03] flex flex-col md:flex-row justify-between items-center">

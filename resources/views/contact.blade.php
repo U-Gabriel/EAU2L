@@ -1,6 +1,7 @@
 @extends('layouts.app')
 
-@section('title', 'Audit Financier Gratuit - Prendre Rendez-vous | Armature Business');
+@section('title', 'Audit Financier Gratuit - Prendre Rendez-vous')
+@section('meta_description', 'Réservez votre audit financier gratuit de 30 minutes. Choisissez votre créneau pour faire le point sur la trésorerie et la rentabilité de votre TPE/PME.')
 
 @php
     $theme = DB::table('page_blocks')->where('id_page', 6)->where('type', 'like', 'color_%')->get()->pluck('content', 'type');
@@ -55,7 +56,7 @@
         <div class="absolute top-0 left-1/4 w-96 h-96 bg-blue-600/10 rounded-full blur-[120px]"></div>
         <div class="absolute bottom-0 right-1/4 w-96 h-96 bg-indigo-600/10 rounded-full blur-[120px]"></div>
 
-        <div class="container relative z-10">
+        <div class="container relative ">
             <div class="max-w-4xl mx-auto mb-16">
                 <div class="flex justify-between relative">
                     <div class="absolute top-1/2 left-0 w-full h-px bg-white/10 -translate-y-1/2"></div>

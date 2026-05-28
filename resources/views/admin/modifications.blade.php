@@ -286,95 +286,92 @@
         @endif
 
         @foreach($blocks as $type => $group)
-            {{-- FILTRE DES SECTIONS À SUPPRIMER --}}
-            @php 
-                $ignoredSections = ['carousel', 'hero', 'text', 'text_image', 'container_marketing', 'featurette', 'featurette-divider'];
-                if(in_array(strtolower($type), $ignoredSections)) continue;
-            @endphp
+    {{-- FILTRE DES SECTIONS À SUPPRIMER --}}
+    @php 
+        $ignoredSections = ['carousel', 'hero', 'text', 'text_image', 'container_marketing', 'featurette', 'featurette-divider'];
+        if(in_array(strtolower($type), $ignoredSections)) continue;
+    @endphp
 
-            <section class="bg-[#0d0d0f] border border-white/5 rounded-[2rem] md:rounded-[2.5rem] overflow-hidden">
-                <div class="bg-white/5 px-6 py-4 border-b border-white/5 flex justify-between items-center">
-                    <h2 class="text-blue-500 font-black uppercase tracking-widest text-[10px] md:text-xs">
-                        {{ strtoupper(str_replace('_', ' ', $type)) }}
-                    </h2>
-                </div>
+    <section class="bg-[#0d0d0f] border border-white/5 rounded-[2rem] md:rounded-[2.5rem] overflow-hidden mb-10">
+        <div class="bg-white/5 px-6 py-4 border-b border-white/5 flex justify-between items-center">
+            <h2 class="text-blue-500 font-black uppercase tracking-widest text-[10px] md:text-xs">
+                {{ strtoupper(str_replace('_', ' ', $type)) }}
+            </h2>
+        </div>
 
-                <div class="p-6 md:p-8 space-y-12">
-                    @foreach($group as $block)
-                        @php 
-                            $data = json_decode($block->content, true); 
-                            $isBeforeHome = (strtolower($type) == 'before_home');
-                            $isFAQ = (strtolower($type) == 'faq');
-                            $isVideo = (strtolower($type) == 'video_presentation');
-                        @endphp
-                        
-                        <form action="{{ route('admin.block.update', $block->id_block) }}" method="POST" enctype="multipart/form-data" 
-                              class="grid grid-cols-1 lg:grid-cols-2 gap-8 pb-10 border-b border-white/5 last:border-0 last:pb-0 transition-all rounded-3xl {{ session('last_updated') == $block->id_block ? 'ring-1 ring-blue-500/30 bg-blue-500/5 p-4' : '' }}">
-                            @csrf
+        <div class="p-6 md:p-8 space-y-12">
+            @foreach($group as $block)
+                            @php 
+                                $data = json_decode($block->content, true); 
+                                $isBeforeHome = (strtolower($type) == 'before_home');
+                                $isFAQ = (strtolower($type) == 'faq');
+                                $isVideo = (strtolower($type) == 'video_presentation');
+                            @endphp
                             
-                            {{-- TEXTES --}}
-                            <div class="space-y-5">
-                                @if(is_array($data))
-                                    @foreach($data as $key => $value)
-                                        @if(in_array($key, ['button_secondary_text', 'button_secondary_link', 'video_link'])) @continue @endif
+                            <form action="{{ route('admin.block.update', $block->id_block) }}" method="POST" enctype="multipart/form-data" 
+                                class="grid grid-cols-1 lg:grid-cols-2 gap-8 pb-10 border-b border-white/5 last:border-0 last:pb-0 transition-all rounded-3xl {{ session('last_updated') == $block->id_block ? 'ring-1 ring-blue-500/30 bg-blue-500/5 p-4' : '' }}">
+                                @csrf
+                                
+                                {{-- TEXTES --}}
+                                <div class="space-y-5">
+                                    @if(is_array($data))
+                                        @foreach($data as $key => $value)
+                                            @if(in_array($key, ['button_secondary_text', 'button_secondary_link', 'video_link'])) @continue @endif
 
-                                        <div>
-                                            <label class="block text-[10px] font-bold text-white/40 uppercase mb-2">{{ str_replace('_', ' ', $key) }}</label>
-                                            @if(strlen($value) > 80)
-                                                <textarea name="content_json[{{ $key }}]" rows="3" class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white text-sm focus:border-blue-500">{{ $value }}</textarea>
-                                            @else
-                                                <input type="text" name="content_json[{{ $key }}]" value="{{ $value }}" class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white text-sm focus:border-blue-500">
-                                            @endif
-                                        </div>
-                                    @endforeach
-                                @endif
-                            </div>
+                                            <div>
+                                                <label class="block text-[10px] font-bold text-white/40 uppercase mb-2">{{ str_replace('_', ' ', $key) }}</label>
+                                                @if(strlen($value) > 80)
+                                                    <textarea name="content_json[{{ $key }}]" rows="3" class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white text-sm focus:border-blue-500">{{ $value }}</textarea>
+                                                @else
+                                                    <input type="text" name="content_json[{{ $key }}]" value="{{ $value }}" class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white text-sm focus:border-blue-500">
+                                                @endif
+                                            </div>
+                                        @endforeach
+                                    @endif
+                                </div>
 
-                            {{-- MÉDIAS --}}
-                            <div class="space-y-6">
-                                @if(!$isBeforeHome && !$isFAQ)
-                                    <div class="bg-white/5 p-5 rounded-2xl border border-white/10">
-                                        <p class="text-[10px] font-bold text-white/40 uppercase mb-4">Médias</p>
-                                        
-                                        {{-- Image Path avec Cache Busting --}}
-                                        <div class="mb-6">
-                                            <label class="text-[9px] text-blue-400 font-bold block mb-2 uppercase italic">Photo / Miniature</label>
-                                            @if($block->image_path && file_exists(public_path($block->image_path)))
-                                                <div class="relative w-20 h-20 mb-3">
-                                                    {{-- L'astuce est ici : ?v=timestamp --}}
-                                                    <img src="{{ asset($block->image_path) }}?v={{ filemtime(public_path($block->image_path)) }}" 
-                                                         class="w-full h-full object-cover rounded-lg border border-white/20 shadow-lg">
-                                                </div>
-                                            @endif
-                                            <input type="file" name="image_path" class="w-full text-[10px] text-white/40 file:bg-white/10 file:border-0 file:text-white file:rounded-lg file:px-3 file:mr-3 cursor-pointer">
-                                        </div>
-
-                                        @if($isVideo)
-                                            <div class="pt-4 border-t border-white/5">
-                                                <label class="text-[9px] text-blue-400 font-bold block mb-2 uppercase italic">Fichier Vidéo (MP4)</label>
-                                                
-                                                @if($block->video_path && file_exists(public_path($block->video_path)))
-                                                    <div class="mb-3">
-                                                        <video width="200" controls class="rounded-lg border border-white/10">
-                                                            {{-- On ajoute le paramètre version ici aussi --}}
-                                                            <source src="{{ asset($block->video_path) }}?v={{ filemtime(public_path($block->video_path)) }}" type="video/mp4">
-                                                            Votre navigateur ne supporte pas la vidéo.
-                                                        </video>
+                                {{-- MÉDIAS & BOUTON D'ENREGISTREMENT --}}
+                                <div class="space-y-6 flex flex-col justify-between">
+                                    @if(!$isBeforeHome && !$isFAQ)
+                                        <div class="bg-white/5 p-5 rounded-2xl border border-white/10">
+                                            <p class="text-[10px] font-bold text-white/40 uppercase mb-4">Médias</p>
+                                            
+                                            {{-- Image Path avec Cache Busting --}}
+                                            <div class="mb-6">
+                                                <label class="text-[9px] text-blue-400 font-bold block mb-2 uppercase italic">Photo / Miniature</label>
+                                                @if($block->image_path && file_exists(public_path($block->image_path)))
+                                                    <div class="relative w-20 h-20 mb-3">
+                                                        <img src="{{ asset($block->image_path) }}?v={{ filemtime(public_path($block->image_path)) }}" 
+                                                            class="w-full h-full object-cover rounded-lg border border-white/20 shadow-lg">
                                                     </div>
                                                 @endif
-
-                                                <div class="text-[10px] text-white/30 mb-2 truncate bg-black/20 p-2 rounded">
-                                                    Fichier : {{ basename($block->video_path) }}
-                                                </div>
-                                                <input type="file" name="video_path" class="w-full text-[10px] text-white/40">
+                                                <input type="file" name="image_path" class="w-full text-[10px] text-white/40 file:bg-white/10 file:border-0 file:text-white file:rounded-lg file:px-3 file:mr-3 cursor-pointer">
                                             </div>
-                                        @endif
-                                    </div>
-                                @endif
 
-                                <div class="flex justify-end gap-4 items-center">
-                                    <span class="text-[9px] text-white/10 font-mono italic">Block #{{ $block->id_block }}</span>
-                                    <div class="flex flex-wrap justify-between gap-4 items-center bg-black/20 p-4 rounded-2xl border border-white/5">
+                                            @if($isVideo)
+                                                <div class="pt-4 border-t border-white/5">
+                                                    <label class="text-[9px] text-blue-400 font-bold block mb-2 uppercase italic">Fichier Vidéo (MP4)</label>
+                                                    
+                                                    @if($block->video_path && file_exists(public_path($block->video_path)))
+                                                        <div class="mb-3">
+                                                            <video width="200" controls class="rounded-lg border border-white/10">
+                                                                <source src="{{ asset($block->video_path) }}?v={{ filemtime(public_path($block->video_path)) }}" type="video/mp4">
+                                                                Votre navigateur ne supporte pas la vidéo.
+                                                            </video>
+                                                        </div>
+                                                    @endif
+
+                                                    <div class="text-[10px] text-white/30 mb-2 truncate bg-black/20 p-2 rounded">
+                                                        Fichier : {{ basename($block->video_path) }}
+                                                    </div>
+                                                    <input type="file" name="video_path" class="w-full text-[10px] text-white/40">
+                                                </div>
+                                            ]@endif
+                                        </div>
+                                    @endif
+
+                                    {{-- BARRE D'ACTIONS DU BLOC (SWITCH + ENREGISTRER) --}}
+                                    <div class="flex flex-wrap items-center justify-between gap-4 bg-black/20 p-4 rounded-2xl border border-white/5 mt-auto">
                                         {{-- SWITCH IS_HIDDEN --}}
                                         <div class="flex items-center gap-3">
                                             <label class="relative inline-flex items-center cursor-pointer">
@@ -386,20 +383,20 @@
                                             </span>
                                         </div>
 
-                                        <div class="flex items-center gap-4">
-                                            <span class="text-[9px] text-white/10 font-mono italic">Block #{{ $block->id_block }}</span>
+                                        {{-- BOUTON SOUVEGARDE --}}
+                                        <div class="flex items-center gap-3">
+                                            <span class="text-[9px] text-white/10 font-mono italic">ID: #{{ $block->id_block }}</span>
                                             <button type="submit" class="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-[10px] font-black uppercase tracking-widest transition-all shadow-lg hover:shadow-blue-500/20 active:scale-95">
-                                                Enregistrer les modifications
+                                                Enregistrer
                                             </button>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                        </form>
-                    @endforeach
-                </div>
-            </section>
-        @endforeach
+                            </form>
+                        @endforeach
+                    </div>
+                </section>
+            @endforeach
     </div>
 </div>
 <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
