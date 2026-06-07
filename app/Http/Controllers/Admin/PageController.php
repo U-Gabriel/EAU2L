@@ -386,4 +386,99 @@ class PageController extends Controller
 
         return back()->with('newsletter_sent', 'Newsletter envoyée avec succès à ' . $subscribers->count() . ' clients.');
     }
+
+   /**
+     * Enregistre une nouvelle situation/enjeu en BDD avec son icône
+     */
+    public function storeSituation(Request $request)
+    {
+        $request->validate([
+            'id_page' => 'required|integer',
+            'icon' => 'required|string',
+            'title' => 'required|string',
+            'description' => 'required|string',
+        ]);
+
+        $maxPosition = DB::table('page_blocks')
+            ->where('id_page', $request->input('id_page'))
+            ->where('type', 'situations')
+            ->max('position') ?? 0;
+
+        // On injecte l'icône dans le JSON envoyé en BDD !
+        $contentJson = json_encode([
+            'icon' => $request->input('icon'),
+            'title' => $request->input('title'),
+            'description' => $request->input('description')
+        ]);
+
+        DB::table('page_blocks')->insert([
+            'id_page' => $request->input('id_page'),
+            'type' => 'situations',
+            'content' => $contentJson,
+            'position' => $maxPosition + 1,
+            'is_hidden' => 0,
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+
+        return redirect()->back()->with('success', 'Le nouvel enjeu a été ajouté avec l\'icône sélectionnée !');
+    }
+    
+    /**
+     * AJOUT : Supprime un bloc d'enjeu de la BDD
+     */
+    public function destroyBlock($id)
+    {
+        $block = PageBlock::findOrFail($id);
+        
+        // Sécurité pour être sûr qu'on ne supprime qu'une situation
+        if ($block->type === 'situations') {
+            $block->delete();
+            return redirect()->back()->with('success', 'L\'enjeu a bien été supprimé.');
+        }
+
+        return redirect()->back()->with('error', 'Action non autorisée pour ce type de contenu.');
+    }
+
+   public function storeGoal(Request $request)
+    {
+        $request->validate([
+            'id_page' => 'required',
+            'title' => 'required',
+            'description' => 'required'
+        ]);
+
+        // Création du contenu JSON
+        $content = json_encode([
+            'title' => $request->title,
+            'description' => $request->description
+        ]);
+
+        DB::table('page_blocks')->insert([
+            'id_page'    => $request->id_page,
+            'type'       => 'goals',
+            'content'    => $content,
+            'position'   => 99, // À ajuster selon votre logique
+            'is_hidden'  => false,
+            'created_at' => now(),
+            'updated_at' => now()
+        ]);
+
+        return back()->with('success', 'Étape ajoutée avec succès !');
+    }
+
+    /**
+     * AJOUT : Supprime un bloc d'étape (Goals) de la BDD
+     */
+    public function destroyGoal($id)
+    {
+        $block = PageBlock::findOrFail($id);
+        
+        if ($block->type === 'goals') {
+            $block->delete();
+            return redirect()->back()->with('success', 'L\'étape a bien été supprimée !');
+        }
+
+        return redirect()->back()->with('error', 'Action non autorisée.');
+    }
 }

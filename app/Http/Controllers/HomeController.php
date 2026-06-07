@@ -19,6 +19,8 @@ class HomeController extends Controller
 
         $beforeHome = $page->blocks->where('type', 'before_home')->first();
 
+        $situations = $page->blocks->where('type', 'situations')->sortBy('position');
+
         $videoBlock = $page->blocks->where('type', 'video_presentation')->first();
 
         // On récupère la collection des objectifs (plusieurs possibles)
@@ -32,7 +34,7 @@ class HomeController extends Controller
         // Ajout de la FAQ
         $faqs = $page->blocks->where('type', 'faq')->sortBy('position');
 
-        return view('home', compact('page', 'beforeHome', 'videoBlock', 'goals', 'meetGoals', 'testimonials', 'faqs'));
+        return view('home', compact('page', 'beforeHome', 'situations', 'videoBlock', 'goals', 'meetGoals', 'testimonials', 'faqs'));
     }
 
 }

@@ -93,7 +93,7 @@
                     </div>
                 </div>
 
-                <button class="btn-close-newsletter" onclick="toggleNewsletter()">×</button>
+                <!-- <button class="btn-close-newsletter" onclick="toggleNewsletter()">×</button> -->
             </div>
         </div>
 

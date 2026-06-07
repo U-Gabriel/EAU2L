@@ -184,6 +184,7 @@
             height: 2px;
             background-color: #3b82f6; 
             border-radius: 2px;
+            transition: all 0.3s ease;
         }
 
         /* BOUTON PRENDRE RDV */
@@ -262,6 +263,7 @@
     </style>
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+    
 </head>
 
 <body>
@@ -290,7 +292,7 @@
             <div class="nav-right-holder">
                 <ul class="nav-menu-list">
                     <li>
-                        <a href="{{ route('home') }}" class="{{ request()->routeIs('home') && !request()->css ? 'active' : '' }}">Vos enjeux</a>
+                        <a href="{{ route('home') }}#problemes" class="{{ request()->routeIs('home') && !request()->css ? 'active' : '' }}">Vos enjeux</a>
                     </li>
                     <li>
                         <a href="{{ route('home') }}#strategy">Notre méthode</a>
@@ -349,8 +351,7 @@
     {{-- FOOTER --}}
     @include('layouts.footer')
 
-    {{-- SCRIPTS OPTIMISÉS --}}
-    <script src="{{ asset('js/bootstrap.bundle.min.js') }}"></script>
+    
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const menuBtn = document.getElementById('mobileMenuBtn');
@@ -382,8 +383,15 @@
                 preloader.classList.add('preloader-hidden');
             }
         });
-    </script>
+    
 
-    @stack('scripts')
+    </script>
+    <script>
+        
+
+         {{-- SCRIPTS OPTIMISÉS --}}
+    <script src="{{ asset('js/bootstrap.bundle.min.js') }}"></script>
+        @stack('scripts')
+    </script>
 </body>
 </html>

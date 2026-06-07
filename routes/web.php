@@ -115,4 +115,10 @@ Route::middleware(['auth'])->prefix($secretPath . '/admin')->group(function () {
     Route::delete('/calendar/destroy/{id}', [PlanningController::class, 'destroyCalendar'])->name('admin.calendar.destroy');
 
     Route::get('/stats', [StatsController::class, 'index'])->name('admin.stats');
+
+    Route::post('/admin/block/store-situation', [App\Http\Controllers\Admin\PageController::class, 'storeSituation'])->name('admin.block.storeSituation');
+    Route::delete('/admin/block/{id}', [App\Http\Controllers\Admin\PageController::class, 'destroyBlock'])->name('admin.block.destroy');
+
+    Route::post('/admin/goals/store', [PageController::class, 'storeGoal'])->name('admin.goals.store');
+    Route::delete('/admin/goals/{id}', [PageController::class, 'destroyGoal'])->name('admin.goals.destroy');
 });
