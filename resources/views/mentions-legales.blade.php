@@ -2,6 +2,10 @@
 
 @section('title', 'Mentions Légales | Eau2L Digital')
 
+@section('meta')
+    <meta name="robots" content="noindex, follow">
+@endsection
+
 @section('content')
 <div class="bg-[#020617] min-h-screen pt-32 pb-24 px-6 relative overflow-hidden">
     <div class="absolute top-0 right-0 w-96 h-96 bg-blue-500/5 blur-[120px] rounded-full"></div>

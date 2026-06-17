@@ -13,6 +13,7 @@
             <span class="text-white font-black uppercase tracking-widest text-xs">Gérer le Blog</span>
         </a>
     </div>
+    
     <div class="mb-10">
         <h1 class="text-2xl md:text-3xl font-black text-white uppercase tracking-tighter">Édition <span class="text-blue-500">Contenu</span></h1>
         <p class="text-white/40 text-sm mt-2">Interface simplifiée pour la gestion de la page d'accueil.</p>
@@ -86,53 +87,8 @@
                         </div>
                     </div>
                 </form>
-
-                {{-- Formulaire Icon Site (ID 49) --}}
-                <form action="{{ route('admin.logo.update', 49) }}" method="POST" enctype="multipart/form-data" class="space-y-4 bg-white/5 p-6 rounded-3xl border border-white/5">
-                    @csrf
-                    <label class="block text-[10px] font-bold text-blue-400 uppercase tracking-widest">Icon site (Compact)</label>
-                    <div class="flex items-center gap-6">
-                        <div class="w-24 h-24 bg-black/40 rounded-xl flex items-center justify-center p-2 border border-white/10 overflow-hidden">
-                            @if($logoIcon)
-                                <img src="{{ asset($logoIcon) }}?v={{ time() }}" alt="Logo Icon" class="max-w-full max-h-full object-contain">
-                            @else
-                                <span class="text-[8px] text-white/20 text-center">Aucune icon</span>
-                            @endif
-                        </div>
-                        <div class="flex-1">
-                            <input type="file" name="image_path" required class="w-full text-xs text-white/40 file:bg-blue-600 file:border-0 file:text-white file:rounded-lg file:px-3 file:py-2 file:mr-3 cursor-pointer">
-                            <button type="submit" class="mt-4 w-full py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-[10px] font-bold uppercase shadow-lg">Mettre à jour Icon</button>
-                        </div>
-                    </div>
-                </form>
             </div>
-
-            {{-- SECTION GESTION DES COULEURS COMPLETE --}}
-            @php
-                $colors = DB::table('page_blocks')
-                            ->where('id_page', 6)
-                            ->where(function($q) {
-                                $q->where('type', 'like', 'color_%')
-                                ->orWhereIn('type', ['header_color', 'main_01_color']);
-                            })->get();
-                
-                if (!function_exists('getThemeBlock')) {
-                    function getThemeBlock($colors, $type) {
-                        return $colors->where('type', $type)->first() ?? (object)['id_block' => 0, 'content' => '#000000'];
-                    }
-                }
-
-                $config = [
-                    ['type' => 'color_primary',    'label' => 'Accent (Boutons, Liens)', 'desc' => 'Couleur vive pour l\'action.', 'default' => '#3b82f6'],
-                    ['type' => 'color_bg_dark',    'label' => 'Fond de Page', 'desc' => 'Couleur de fond principale du site.', 'default' => '#020617'],
-                    ['type' => 'color_bg_card',    'label' => 'Cartes & Éléments', 'desc' => 'Fond des cartes, inputs et menus.', 'default' => '#1a1a1c'],
-                    ['type' => 'color_text_light', 'label' => 'Texte Principal', 'desc' => 'Titres et textes importants (blanc).', 'default' => '#ffffff'],
-                    ['type' => 'color_text_gray',  'label' => 'Texte Secondaire', 'desc' => 'Descriptions et textes d\'aide (gris).', 'default' => '#94a3b8'],
-                    ['type' => 'color_border',     'label' => 'Bordures & Lignes', 'desc' => 'Lignes de séparation et contours.', 'default' => '#ffffff1a'],
-                ];
-            @endphp
-
-   
+        </div>
 
         {{-- SECTION ÉDITION DU MAIL DE CONFIRMATION --}}
         @php
@@ -140,7 +96,7 @@
         @endphp
 
         @if($mailBlock)
-        <section class="bg-[#0d0d0f] border border-white/5 rounded-[2rem] md:rounded-[2.5rem] overflow-hidden mb-12">
+        <section class="bg-[#0d0d0f] border border-white/5 rounded-[2rem] md:rounded-[2.5rem] overflow-hidden">
             <div class="bg-white/5 px-6 py-4 border-b border-white/5 flex justify-between items-center">
                 <h2 class="text-emerald-500 font-black uppercase tracking-widest text-[10px] md:text-xs flex items-center gap-2">
                     <span class="w-2 h-2 bg-emerald-500 rounded-full"></span>
@@ -189,7 +145,7 @@
         {{-- BOUCLE PRINCIPALE DES SECTIONS --}}
         @foreach($blocks as $type => $group)
             @php 
-                $ignoredSections = ['carousel', 'hero', 'text', 'text_image', 'container_marketing', 'featurette', 'featurette-divider', 'situations', 'goals'];
+                $ignoredSections = ['carousel', 'hero', 'text', 'text_image', 'container_marketing', 'featurette', 'featurette-divider', 'situations', 'goals', 'video_presentation', 'meet_goals'];
                 if(in_array(strtolower($type), $ignoredSections)) continue;
                 $isBeforeHome = (strtolower($type) == 'before_home');
             @endphp
@@ -206,99 +162,64 @@
                         @php 
                             $data = json_decode($block->content, true); 
                             $isFAQ = (strtolower($type) == 'faq');
-                            $isVideo = (strtolower($type) == 'video_presentation');
                         @endphp
                         
                         <form action="{{ route('admin.block.update', $block->id_block) }}" method="POST" enctype="multipart/form-data" 
-                            class="grid grid-cols-1 lg:grid-cols-2 gap-8 pb-10 border-b border-white/5 last:border-0 last:pb-0 transition-all rounded-3xl {{ session('last_updated') == $block->id_block ? 'ring-1 ring-blue-500/30 bg-blue-500/5 p-4' : '' }}">
+                            class="block pb-10 border-b border-white/5 last:border-0 last:pb-0 transition-all rounded-3xl {{ session('last_updated') == $block->id_block ? 'ring-1 ring-blue-500/30 bg-blue-500/5 p-4' : '' }}">
                             @csrf
                             
-                            {{-- TEXTES / CHAMPS TRADUITS SANS LES BALISES BRUTES --}}
-                            <div class="space-y-5">
-                                @if(is_array($data))
-                                    @foreach($data as $key => $value)
-                                        @if(in_array($key, ['button_secondary_text', 'button_secondary_link', 'video_link'])) @continue @endif
+                            {{-- Conteneur en grille pour les inputs --}}
+                            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-6">
+                                <div class="space-y-5 lg:col-span-2">
+                                    @if(is_array($data))
+                                        @foreach($data as $key => $value)
+                                            @if(in_array($key, ['button_secondary_text', 'button_secondary_link', 'video_link'])) @continue @endif
 
-                                        <div>
-                                            <label class="block text-[10px] font-bold text-white/40 uppercase mb-2">
-                                                @if($isBeforeHome && $key === 'eyebrow') Surtitre (Petits caractères du haut)
-                                                @elseif($isBeforeHome && $key === 'big_text') Titre Principal (Grand texte)
-                                                @elseif($isBeforeHome && $key === 'small_text') Paragraphe de Description (Texte d'accompagnement)
-                                                @elseif($isBeforeHome && $key === 'button_primary_text') Texte du bouton principal
-                                                @elseif($isBeforeHome && $key === 'button_primary_link') Lien du bouton principal
-                                                @else {{ str_replace('_', ' ', $key) }} @endif
-                                            </label>
+                                            <div>
+                                                <label class="block text-[10px] font-bold text-white/40 uppercase mb-2">
+                                                    @if($isBeforeHome && $key === 'eyebrow') Surtitre (Petits caractères du haut)
+                                                    @elseif($isBeforeHome && $key === 'big_text') Titre Principal (Grand texte)
+                                                    @elseif($isBeforeHome && $key === 'small_text') Paragraphe de Description (Texte d'accompagnement)
+                                                    @elseif($isBeforeHome && $key === 'button_primary_text') Texte du bouton principal
+                                                    @elseif($isBeforeHome && $key === 'button_primary_link') Lien du bouton principal
+                                                    @else {{ str_replace('_', ' ', $key) }} @endif
+                                                </label>
 
-                                            {{-- Gestion visuelle simplifiée pour le Before Home ou les textes longs --}}
-                                            @if($isBeforeHome && in_array($key, ['big_text', 'small_text']))
-                                                <div class="space-y-2">
-                                                    {{-- Champ caché pour soumettre la valeur modifiée par Quill --}}
-                                                    <textarea id="hidden_{{ $block->id_block }}_{{ $key }}" name="content_json[{{ $key }}]" class="hidden">{!! $value !!}</textarea>
-                                                    {{-- Éditeur visuel Quill couplé --}}
-                                                    <div class="quill-dynamic-editor bg-white/5 rounded-xl border border-white/10 text-white" data-target="hidden_{{ $block->id_block }}_{{ $key }}" style="height: 120px;">
-                                                        {!! $value !!}
+                                                @if($isBeforeHome && in_array($key, ['big_text', 'small_text']))
+                                                    <div class="space-y-2">
+                                                        <textarea id="hidden_{{ $block->id_block }}_{{ $key }}" name="content_json[{{ $key }}]" class="hidden">{!! $value !!}</textarea>
+                                                        <div class="quill-dynamic-editor bg-white/5 rounded-xl border border-white/10 text-white" data-target="hidden_{{ $block->id_block }}_{{ $key }}" style="height: 120px;">
+                                                            {!! $value !!}
+                                                        </div>
                                                     </div>
-                                                </div>
-                                            @elseif(strlen($value) > 80)
-                                                <textarea name="content_json[{{ $key }}]" rows="3" class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white text-sm focus:border-blue-500">{!! strip_tags($value) !!}</textarea>
-                                            @else
-                                                <input type="text" name="content_json[{{ $key }}]" value="{{ strip_tags($value) }}" class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white text-sm focus:border-blue-500">
-                                            @endif
-                                        </div>
-                                    @endforeach
-                                @endif
+                                                @elseif(strlen($value) > 80)
+                                                    <textarea name="content_json[{{ $key }}]" rows="3" class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white text-sm focus:border-blue-500">{!! strip_tags($value) !!}</textarea>
+                                                @else
+                                                    <input type="text" name="content_json[{{ $key }}]" value="{{ strip_tags($value) }}" class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white text-sm focus:border-blue-500">
+                                                @endif
+                                            </div>
+                                        @endforeach
+                                    @endif
+                                </div>
                             </div>
 
-                            {{-- MÉDIAS & BOUTON D'ENREGISTREMENT --}}
-                            <div class="space-y-6 flex flex-col justify-between">
-                                @if(!$isBeforeHome && !$isFAQ)
-                                    <div class="bg-white/5 p-5 rounded-2xl border border-white/10">
-                                        <p class="text-[10px] font-bold text-white/40 uppercase mb-4">Médias</p>
-                                        
-                                        <div class="mb-6">
-                                            <label class="text-[9px] text-blue-400 font-bold block mb-2 uppercase italic">Photo / Miniature</label>
-                                            @if($block->image_path && file_exists(public_path($block->image_path)))
-                                                <div class="relative w-20 h-20 mb-3">
-                                                    <img src="{{ asset($block->image_path) }}?v={{ filemtime(public_path($block->image_path)) }}" class="w-full h-full object-cover rounded-lg border border-white/20 shadow-lg">
-                                                </div>
-                                            @endif
-                                            <input type="file" name="image_path" class="w-full text-[10px] text-white/40 file:bg-white/10 file:border-0 file:text-white file:rounded-lg file:px-3 file:mr-3 cursor-pointer">
-                                        </div>
+                            {{-- BARRE D'ACTIONS DU BLOC (Isolée de la grid) --}}
+                            <div class="flex flex-wrap items-center justify-between gap-4 bg-black/20 p-4 rounded-2xl border border-white/5">
+                                <div class="flex items-center gap-3">
+                                    <label class="relative inline-flex items-center cursor-pointer">
+                                        <input type="checkbox" name="is_hidden" value="1" {{ $block->is_hidden ? 'checked' : '' }} class="sr-only peer">
+                                        <div class="w-11 h-6 bg-white/10 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white/40 after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600 peer-checked:after:bg-white"></div>
+                                    </label>
+                                    <span class="text-[10px] font-bold uppercase tracking-widest {{ $block->is_hidden ? 'text-orange-500' : 'text-white/40' }}">
+                                        {{ $block->is_hidden ? 'Masqué' : 'Visible' }}
+                                    </span>
+                                </div>
 
-                                        @if($isVideo)
-                                            <div class="pt-4 border-t border-white/5">
-                                                <label class="text-[9px] text-blue-400 font-bold block mb-2 uppercase italic">Fichier Vidéo (MP4)</label>
-                                                @if($block->video_path && file_exists(public_path($block->video_path)))
-                                                    <div class="mb-3">
-                                                        <video width="200" controls class="rounded-lg border border-white/10">
-                                                            <source src="{{ asset($block->video_path) }}?v={{ filemtime(public_path($block->video_path)) }}" type="video/mp4">
-                                                        </video>
-                                                    </div>
-                                                @endif
-                                                <input type="file" name="video_path" class="w-full text-[10px] text-white/40">
-                                            </div>
-                                        @endif
-                                    </div>
-                                @endif
-
-                                {{-- BARRE D'ACTIONS DU BLOC --}}
-                                <div class="flex flex-wrap items-center justify-between gap-4 bg-black/20 p-4 rounded-2xl border border-white/5 mt-auto">
-                                    <div class="flex items-center gap-3">
-                                        <label class="relative inline-flex items-center cursor-pointer">
-                                            <input type="checkbox" name="is_hidden" value="1" {{ $block->is_hidden ? 'checked' : '' }} class="sr-only peer">
-                                            <div class="w-11 h-6 bg-white/10 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white/40 after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600 peer-checked:after:bg-white"></div>
-                                        </label>
-                                        <span class="text-[10px] font-bold uppercase tracking-widest {{ $block->is_hidden ? 'text-orange-500' : 'text-white/40' }}">
-                                            {{ $block->is_hidden ? 'Masqué' : 'Visible' }}
-                                        </span>
-                                    </div>
-
-                                    <div class="flex items-center gap-3">
-                                        <span class="text-[9px] text-white/10 font-mono italic">ID: #{{ $block->id_block }}</span>
-                                        <button type="submit" class="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-[10px] font-black uppercase tracking-widest transition-all shadow-lg active:scale-95">
-                                            Enregistrer
-                                        </button>
-                                    </div>
+                                <div class="flex items-center gap-3">
+                                    <span class="text-[9px] text-white/10 font-mono italic">ID: #{{ $block->id_block }}</span>
+                                    <button type="submit" class="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-[10px] font-black uppercase tracking-widest transition-all shadow-lg active:scale-95">
+                                        Enregistrer
+                                    </button>
                                 </div>
                             </div>
                         </form>
@@ -353,19 +274,21 @@
                                                 <textarea name="content_json[description]" rows="3" class="w-full bg-black/20 border border-white/10 rounded-xl px-3 py-2 text-white text-xs focus:border-blue-500">{{ $sitData['description'] ?? '' }}</textarea>
                                             </div>
 
-                                            <div class="flex gap-2 pt-2">
-                                                <button type="submit" class="flex-1 py-2 bg-blue-600 hover:bg-blue-700 text-white text-[10px] font-black uppercase tracking-widest rounded-lg transition-colors">
+                                            <div class="pt-2">
+                                                <button type="submit" class="w-full py-2 bg-blue-600 hover:bg-blue-700 text-white text-[10px] font-black uppercase tracking-widest rounded-lg transition-colors">
                                                     Mettre à jour
                                                 </button>
-                                        </form>
-                                                <form action="{{ route('admin.block.destroy', $sit->id_block) }}" method="POST" onsubmit="return confirm('Supprimer cet enjeu ?');">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <button type="submit" class="px-3 py-2 bg-red-600/20 hover:bg-red-600 text-red-400 hover:text-white rounded-lg text-[10px] font-bold transition-all">
-                                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-4v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
-                                                    </button>
-                                                </form>
                                             </div>
+                                        </form>
+
+                                        <form action="{{ route('admin.block.destroy', $sit->id_block) }}" method="POST" onsubmit="return confirm('Supprimer cet enjeu ?');" class="mt-2">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="w-full flex justify-center items-center py-2 bg-red-600/20 hover:bg-red-600 text-red-400 hover:text-white rounded-lg text-[10px] font-bold transition-all">
+                                                <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-4v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+                                                Supprimer l'enjeu
+                                            </button>
+                                        </form>
                                     </div>
                                 @endforeach
                             </div>
@@ -401,67 +324,14 @@
                         </div>
                     </div>
                 </section>
-
-                {{-- SECTION GOALS DYNAMIQUE (Ajout & Suppression) --}}
-                <section class="mb-10 bg-[#0d0d0f] border border-amber-500/20 rounded-[2.5rem] overflow-hidden">
-                    <div class="bg-amber-600/10 px-6 py-4 border-b border-white/5 flex justify-between items-center">
-                        <h2 class="text-amber-400 font-black uppercase tracking-widest text-xs">Notre méthode (Goals)</h2>
-                    </div>
-                    
-                    <div class="p-8 space-y-6">
-                        @if(isset($blocks['goals']))
-                           @foreach($blocks['goals'] as $goal)
-                                @php 
-                                    $g = json_decode($goal->content, true); 
-                                @endphp
-                                <div class="bg-white/5 p-6 rounded-2xl border border-white/5 relative">
-                                    <form action="{{ route('admin.block.update', $goal->id_block) }}" method="POST" class="space-y-3">
-                                        @csrf
-                                        {{-- Titre --}}
-                                        <input type="text" name="content_json[title]" value="{{ $g['title'] ?? '' }}" class="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-2 text-white font-bold">
-                                        
-                                        {{-- Zone d'Édition Visuelle (Quill) --}}
-                                       {{-- Description (Le code ci-dessous doit être COLLÉ sur une seule ligne pour éviter les espaces) --}}
-                                        <textarea name="content_json[description]" class="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-2 text-white text-sm" rows="5">{!! isset($g['description']) ? trim(strip_tags($g['description'])) : '' !!}</textarea>
-                                        
-                                        {{-- Champ masqué pour la Base de Données (Aucun espace à l'intérieur) --}}
-                                        <textarea name="content_json[description]" id="desc_goal_{{ $goal->id_block }}" class="hidden">{!! $g['description'] ?? '' !!}</textarea>
-                                        
-                                        <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-lg text-[10px] font-bold uppercase mt-2">Mettre à jour</button>
-                                    </form>
-                                    
-                                    {{-- Bouton de suppression --}}
-                                    <form action="{{ route('admin.goals.destroy', $goal->id_block) }}" method="POST" class="absolute top-4 right-4" onsubmit="return confirm('Supprimer cette étape ?');">
-                                        @csrf 
-                                        @method('DELETE')
-                                        <button type="submit" class="text-red-500 font-black text-xs hover:text-red-400">SUPPRIMER</button>
-                                    </form>
-                                </div>
-                            @endforeach
-                        @endif
-
-                        {{-- Formulaire d'ajout d'un nouveau goal --}}
-                        <form action="{{ route('admin.goals.store') }}" method="POST" class="bg-amber-600/5 p-6 rounded-2xl border border-amber-500/10 border-dashed">
-                            @csrf
-                            <input type="hidden" name="id_page" value="{{ $page->id_page }}">
-                            <h3 class="text-white text-xs font-bold uppercase mb-3">Ajouter une étape</h3>
-                            <input type="text" name="title" required placeholder="Titre" class="w-full mb-2 bg-black/40 border border-white/10 rounded-xl px-4 py-2 text-white">
-                            <textarea name="description" required placeholder="Description" class="w-full mb-3 bg-black/40 border border-white/10 rounded-xl px-4 py-2 text-white"></textarea>
-                            <button type="submit" class="w-full py-3 bg-amber-600 text-white rounded-xl font-black uppercase text-[10px]">Ajouter cette étape</button>
-                        </form>
-                    </div>
-                </section>
             @endif
         @endforeach
     </div>
 </div>
 
-
-
-{{-- SCRIPT D'INITIALISATION SÉCURISÉ DES ÉDITEURS VISUELS (QUILL) --}}
+{{-- SCRIPT D'INITIALISATION DES ÉDITEURS --}}
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        // Initialisation de l'éditeur de mail si existant
         if(document.getElementById('quill_mail_editor')) {
             var quillMail = new Quill('#quill_mail_editor', {
                 theme: 'snow',
@@ -472,7 +342,6 @@
             });
         }
 
-        // Initialisation automatique et dynamique de Quill sur les champs textes complexes (Before Home)
         document.querySelectorAll('.quill-dynamic-editor').forEach(function(editorContainer) {
             var targetId = editorContainer.getAttribute('data-target');
             var hiddenTextArea = document.getElementById(targetId);
@@ -483,13 +352,12 @@
                     modules: {
                         toolbar: [
                             ['bold', 'italic', 'underline'],
-                            [{ 'color': [] }], // Permet de gérer la couleur dorée ou personnalisée directement
+                            [{ 'color': [] }],
                             ['clean']
                         ]
                     }
                 });
 
-                // Écoute les changements pour mettre à jour en direct le textarea caché destiné à la BDD
                 quillInstance.on('text-change', function() {
                     hiddenTextArea.value = quillInstance.root.innerHTML;
                 });

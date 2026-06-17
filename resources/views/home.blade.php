@@ -514,6 +514,185 @@
         margin: 0;
     }
 
+    /* On cible l'em à l'intérieur du titre principal pour réduire sa taille */
+    .hero .hero-main-title h1 {
+        font-size: 3.5rem !important; /* Utilisez des rem ou px, évitez em ici */
+        line-height: 1.2 !important;
+    }
+
+    /* ========================================================= */
+    /* --- NOUVEAU DESIGN STATIQUE : NOTRE MÉTHODE (MAQUETTE) ---*/
+    /* ========================================================= */
+    .new-method-section {
+        padding: 30px 0;
+        background: var(--white);
+    }
+    .new-method-label {
+        color: var(--primary-gold);
+        font-size: 0.78rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 2.5px;
+        margin-bottom: 12px;
+    }
+    .steps-container { margin-top: 56px; }
+    .step-row {
+        display: grid;
+        grid-template-columns: 72px 1fr;
+        gap: 0 32px;
+        padding-bottom: 48px;
+        position: relative;
+    }
+    .step-row:last-child { padding-bottom: 0; }
+    .step-num-col {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+    .step-num {
+        width: 56px;
+        height: 56px;
+        border-radius: 50%;
+        background: var(--hero-bg);
+        color: var(--primary-gold);
+        font-family: 'DM Serif Display', Georgia, serif;
+        font-size: 1.2rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        z-index: 1;
+    }
+    .step-line {
+        flex: 1;
+        width: 2px;
+        background: var(--border-light);
+        margin-top: 8px;
+    }
+    .step-row:last-child .step-line { display: none; }
+    .step-content { padding-top: 12px; }
+    
+    .expertise-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        gap: 20px;
+        margin-top: 24px;
+    }
+    .expertise-card {
+        background: var(--light-bg);
+        border: 1px solid var(--border-light);
+        border-radius: 12px;
+        padding: 28px 22px;
+        border-top: 3px solid var(--primary-gold);
+        transition: transform 0.2s;
+    }
+    .expertise-card:hover { transform: translateY(-3px); }
+    .expertise-card h4 {
+        font-family: 'DM Serif Display', Georgia, serif;
+        font-size: 1.05rem;
+        color: var(--text-dark);
+        margin-bottom: 10px;
+    }
+    .expertise-card p {
+        font-size: 0.87rem;
+        color: var(--text-muted);
+        line-height: 1.6;
+        margin: 0;
+    }
+
+    .about-layout {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 64px;
+        align-items: center;
+        margin-top: 48px;
+    }
+
+    .about-text p {
+        color: #555B6E;
+        font-size: .95rem;
+        margin-bottom: 16px;
+        line-height: 1.7;
+    }
+
+    .about-stats {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+        margin-top: 32px;
+    }
+
+    .stat-box {
+        background: #F7F8FA;
+        border-radius: 10px;
+        padding: 20px;
+        text-align: center;
+    }
+
+    .stat-num {
+        font-family: 'DM Serif Display', serif;
+        font-size: 2rem;
+        color: #C5973B;
+    }
+
+    .stat-label {
+        font-size: .82rem;
+        color: #555B6E;
+        margin-top: 4px;
+    }
+
+    .about-right {
+        background: #0F1B2D;
+        border-radius: 16px;
+        padding: 48px 36px;
+        color: #fff;
+    }
+
+    .about-right h3 {
+        font-family: 'DM Serif Display', serif;
+        font-size: 1.4rem;
+        margin-bottom: 20px;
+        color: #D4AC5E;
+    }
+
+    .about-right ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .about-right li {
+        padding: 12px 0;
+        border-bottom: 1px solid rgba(255,255,255,.08);
+        font-size: .92rem;
+        color: rgba(255,255,255,.75);
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .about-right li:before {
+        content: "→";
+        color: #C5973B;
+        font-weight: 700;
+    }
+
+    #about .section-title{
+        font-weight: 600;
+    }
+
+    @media (max-width: 991px) {
+        .about-layout {
+            grid-template-columns: 1fr;
+            gap: 32px;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .step-row { grid-template-columns: 56px 1fr; gap: 0 20px; }
+    }
+
+
     /* --- RENDER DESKTOP GRAND ÉCRAN : EFFET ASYMÉTRIQUE GAUCHE / DROITE --- */
     @media (min-width: 992px) {
         .timeline-container::before {
@@ -722,6 +901,104 @@
         line-height: 1.6;
     }
 
+    /* --- SECTION TARIFS (TRANSPARENCE) --- */
+    .tarifs-section {
+        padding: 30px 0 !important;
+        background: var(--light-bg) !important;
+    }
+    .section-label {
+        color: var(--primary-gold);
+        font-size: 0.78rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 2.5px;
+        margin-bottom: 12px;
+    }
+    .section-subtitle {
+        color: var(--text-muted);
+        font-size: 1.05rem;
+        max-width: 600px;
+        line-height: 1.65;
+    }
+    .tarifs-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 24px;
+        margin-top: 48px;
+    }
+    .tarif-card {
+        background: var(--white);
+        border: 1px solid var(--border-light);
+        border-radius: 14px;
+        padding: 36px 28px;
+        position: relative;
+        transition: transform 0.25s, box-shadow 0.25s;
+    }
+    .tarif-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 32px rgba(15, 23, 42, 0.06);
+    }
+    .tarif-card.featured {
+        border: 2px solid var(--primary-gold);
+        box-shadow: 0 8px 32px rgba(197, 151, 59, 0.12);
+    }
+    .tarif-badge {
+        position: absolute;
+        top: -12px;
+        left: 28px;
+        background: var(--primary-gold);
+        color: var(--hero-bg);
+        font-size: 0.72rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        padding: 4px 14px;
+        border-radius: 20px;
+        letter-spacing: 1px;
+    }
+    .tarif-card h4 {
+        font-family: 'DM Serif Display', Georgia, serif;
+        font-size: 1.2rem;
+        color: var(--text-dark);
+        margin-bottom: 8px;
+    }
+    .tarif-price {
+        font-size: 1.6rem;
+        font-weight: 700;
+        color: var(--hero-bg);
+        margin-bottom: 6px;
+    }
+    .tarif-price span {
+        font-size: 0.85rem;
+        color: var(--text-gray-hero);
+        font-weight: 500;
+    }
+    .tarif-desc {
+        font-size: 0.88rem;
+        color: var(--text-muted);
+        margin-bottom: 20px;
+    }
+    .tarif-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+    .tarif-list li {
+        padding: 8px 0;
+        font-size: 0.87rem;
+        color: var(--text-muted);
+        border-bottom: 1px solid var(--border-light);
+        display: flex;
+        align-items: flex-start;
+        gap: 8px;
+    }
+    .tarif-list li:last-child { border-bottom: none; }
+    .tarif-list li::before {
+        content: '✓';
+        color: #2E7D56;
+        font-weight: 700;
+        flex-shrink: 0;
+    }
+
     /* --- GENERAL BREAKPOINTS --- */
     @media (min-width: 992px) {
         .hero { 
@@ -792,7 +1069,7 @@
 
                     <div class="hero-main-title">
                         @php
-                            $cleanBigText = $data->big_text ?? '<h1>Vous savez que votre entreprise perd de l\'argent. <em style="color: rgb(212, 172, 94);">Vous ne savez pas exactement où, ni combien.</em></h1>';
+                            $cleanBigText = $data->big_text ?? '<h1 style="font-size: 0.7em">Vous savez que votre entreprise perd de l\'argent. <em style="color: rgb(212, 172, 94);">Vous ne savez pas exactement où, ni combien.</em></h1>';
                             $cleanBigText = preg_replace('/<p>&nbsp;<\/p>|<p><br><\/p>/', '', $cleanBigText);
                         @endphp
                         {!! htmlspecialchars_decode($cleanBigText) !!}
@@ -907,49 +1184,329 @@
         </section>
     @endif
 
-    {{-- 4. NOTRE MÉTHODE : RENDU CHRONOLOGIQUE PAR CARDS ASYMÉTRIQUES INVERSÉES --}}
+
+    {{-- ============================================================== --}}
+    {{-- NOUVELLE SECTION : NOTRE MÉTHODE (Issue de la maquette HTML) --}}
+    {{-- ============================================================== --}}
+    <section class="new-method-section" id="strategy">
+        <div class="container">
+            <div class="new-method-label text-center text-lg-start">Notre méthode</div>
+            <h2 class="section-title text-center text-lg-start">3 étapes. 90 jours. Des résultats mesurables.</h2>
+            <p class="text-muted text-center text-lg-start mx-auto mx-lg-0" style="font-size: 1.05rem; max-width: 600px; line-height: 1.65;">
+                Une approche structurée, calibrée pour les dirigeants qui veulent agir — pas attendre.
+            </p>
+
+            <div class="steps-container">
+                <div class="step-row" data-aos="fade-up">
+                    <div class="step-num-col">
+                        <div class="step-num">01</div>
+                        <div class="step-line"></div>
+                    </div>
+                    <div class="step-content">
+                        <h3 style="font-family: 'DM Serif Display', Georgia, serif; font-size: 1.35rem; color: var(--text-dark); margin-bottom: 12px;">Rendez-vous découverte</h3>
+                        <p style="color: var(--text-muted); font-size: 0.95rem; max-width: 580px;">Échange de 30 minutes, en ligne ou en présentiel. On analyse votre situation : tensions de trésorerie, baisse de marge, pression sociale ou organisationnelle. À l'issue, nous définissons ensemble si un audit est pertinent — et lequel.</p>
+                        <p style="margin-top:10px; color: var(--primary-gold); font-weight: 600; font-size: 0.88rem;">Gratuit · Sans engagement · Confidentiel</p>
+                    </div>
+                </div>
+
+                <div class="step-row" data-aos="fade-up" data-aos-delay="100">
+                    <div class="step-num-col">
+                        <div class="step-num">02</div>
+                        <div class="step-line"></div>
+                    </div>
+                    <div class="step-content">
+                        <h3 style="font-family: 'DM Serif Display', Georgia, serif; font-size: 1.35rem; color: var(--text-dark); margin-bottom: 12px;">Audit — Phase 1</h3>
+                        <p style="color: var(--text-muted); font-size: 0.95rem; max-width: 580px;">Diagnostic financier, social et organisationnel complet avec préconisations chiffrées. Tarif indexé à la taille de votre entreprise.</p>
+                        
+                        <div class="expertise-grid">
+                            <div class="expertise-card">
+                                <h4>Audit financier & comptable</h4>
+                                <p>Diagnostic de rentabilité, analyse des coûts, détection des fuites de marge, tableaux de bord de pilotage.</p>
+                            </div>
+                            <div class="expertise-card">
+                                <h4>Audit social & RH</h4>
+                                <p>Conformité URSSAF, optimisation masse salariale, accompagnement juridique, plans de restructuration.</p>
+                            </div>
+                            <div class="expertise-card">
+                                <h4>Accompagnement opérationnel</h4>
+                                <p>Réduction des coûts, modernisation des process, recouvrement de créances, négociations fournisseurs.</p>
+                            </div>
+                            <div class="expertise-card">
+                                <h4>Redressement & retournement</h4>
+                                <p>Plan de retournement structuré, stabilisation de trésorerie, restauration de la rentabilité.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="step-row" data-aos="fade-up" data-aos-delay="200">
+                    <div class="step-num-col">
+                        <div class="step-num">03</div>
+                    </div>
+                    <div class="step-content">
+                        <h3 style="font-family: 'DM Serif Display', Georgia, serif; font-size: 1.35rem; color: var(--text-dark); margin-bottom: 12px;">Accompagnement opérationnel — Phase 2</h3>
+                        <p style="color: var(--text-muted); font-size: 0.95rem; max-width: 580px;">Mise en œuvre des recommandations pendant 90 jours minimum. Rémunérée <strong>uniquement sur les résultats obtenus</strong> chaque mois. Zéro honoraire fixe sur cette phase.</p>
+                        <p style="margin-top:12px; color: var(--text-gray-hero); font-size: 0.92rem;">Contrairement à un administrateur judiciaire, nous intervenons en toute discrétion — vos clients, fournisseurs et salariés ne sont pas informés.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+<section class="tarifs-section" id="tarifs">
+    <div class="container">
+        <div class="text-center text-lg-start mb-5" data-aos="fade-down">
+            <span class="section-label">Transparence</span>
+            <h2 class="section-title font-normal mt-2 mb-3">Nos tarifs</h2>
+            <p class="section-subtitle mx-auto mx-lg-0">Pas de devis opaque. Vous savez exactement ce que vous payez, à chaque étape.</p>
+        </div>
+
+        <div class="phase-container mb-5" data-aos="fade-up">
+            <div class="phase-header-block">
+                <div class="phase-badge">Phase 01</div>
+                <h3 class="phase-title">Diagnostic & Audit Stratégique</h3>
+                <p class="phase-subtitle">Analyse approfondie et préconisations chiffrées. Tarif fixe selon la taille de votre structure.</p>
+            </div>
+
+            <div class="tarifs-grid mt-4">
+                <div class="tarif-card">
+                    <h4>Audit · TPE</h4>
+                    <div class="tarif-price">4&nbsp;500 – 8&nbsp;000&nbsp;€ <span>HT</span></div>
+                    <div class="tarif-desc">Chiffre d'affaires inférieur à 1 M€</div>
+                    <ul class="tarif-list">
+                        <li>Analyse financière complète</li>
+                        <li>Diagnostic de rentabilité</li>
+                        <li>Détection des pertes de marge</li>
+                        <li>Plan d'actions priorisé</li>
+                    </ul>
+                </div>
+
+                <div class="tarif-card featured">
+                    <div class="tarif-badge">Le plus fréquent</div>
+                    <h4>Audit · PME</h4>
+                    <div class="tarif-price">8&nbsp;000 – 15&nbsp;000&nbsp;€ <span>HT</span></div>
+                    <div class="tarif-desc">Chiffre d'affaires entre 1 M€ et 10 M€</div>
+                    <ul class="tarif-list">
+                        <li>Audit financier détaillé</li>
+                        <li>Audit social et RH</li>
+                        <li>Analyse organisationnelle</li>
+                        <li>Préconisations chiffrées</li>
+                    </ul>
+                </div>
+
+                <div class="tarif-card">
+                    <h4>Audit · ETI</h4>
+                    <div class="tarif-price">15&nbsp;000 – 40&nbsp;000&nbsp;€ <span>HT</span></div>
+                    <div class="tarif-desc">Chiffre d'affaires entre 10 M€ et 50 M€</div>
+                    <ul class="tarif-list">
+                        <li>Audit multidisciplinaire</li>
+                        <li>Analyse des risques</li>
+                        <li>Optimisation financière</li>
+                        <li>Plan de retournement complet</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="phase-container" data-aos="fade-up" data-aos-delay="100">
+            <div class="phase-header-block">
+                <div class="phase-badge badge-gold">Phase 02</div>
+                <h3 class="phase-title">Accompagnement Opérationnel</h3>
+                <div class="phase-price-highlight">Rémunéré uniquement sur résultats</div>
+                <p class="phase-subtitle max-w-720">
+                    Aucun honoraire fixe. Le pourcentage est défini contractuellement à l'issue de l'audit. 
+                    Engagement initial de 90 jours, résiliable ensuite par simple e-mail, sans préavis ni pénalité.
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+    /* Structure globale des blocs de phases */
+    .phase-container {
+        background: var(--white, #ffffff);
+        border: 2px solid var(--primary-gold, #c6973b);
+        border-radius: 16px;
+        padding: 40px 32px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.04);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .phase-container:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 15px 40px rgba(198, 151, 59, 0.08);
+    }
+
+    /* En-tête des blocs de phase */
+    .phase-header-block {
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+    .phase-badge {
+        display: inline-block;
+        font-family: 'Inter', sans-serif;
+        font-size: 0.75rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        background: rgba(13, 21, 39, 0.05);
+        color: var(--hero-bg, #0d1527);
+        padding: 6px 16px;
+        border-radius: 50px;
+        margin-bottom: 14px;
+    }
+
+    .phase-badge.badge-gold {
+        background: var(--primary-gold, #c6973b);
+        color: #ffffff;
+    }
+
+    .phase-title {
+        font-family: 'DM Serif Display', Georgia, serif;
+        font-size: 1.75rem;
+        color: var(--text-dark, #0d1527);
+        margin-bottom: 10px;
+        font-weight: 600;
+    }
+
+    .phase-subtitle {
+        font-size: 0.95rem;
+        color: var(--text-muted, #6c757d);
+        margin: 0 auto;
+    }
+
+    .max-w-720 {
+        max-width: 720px;
+        line-height: 1.6;
+    }
+
+    /* Mise en avant du prix orienté performance de la phase 2 */
+    .phase-price-highlight {
+        font-family: 'Inter', sans-serif;
+        font-size: 1.25rem;
+        color: var(--primary-gold, #c6973b);
+        font-weight: 700;
+        margin-bottom: 12px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    /* Correction des marges internes de la grille de cartes */
+    .tarifs-section .tarifs-grid {
+        gap: 24px;
+    }
+</style>
+  <section class="section" id="about">
+    <div class="container">
+
+        <div class="section-label">
+            Qui sommes-nous
+        </div>
+
+        <h2 class="section-title">
+            Un cabinet fondé par un praticien du redressement
+        </h2>
+
+        <div class="about-layout">
+
+            <div>
+
+                <div class="about-text">
+
+                    <p>
+                        ARMATURE Business accompagne les dirigeants de TPE,
+                        PME et ETI en Île-de-France confrontés à des difficultés
+                        financières, sociales ou organisationnelles.
+                    </p>
+
+                    <p>
+                        Notre fondateur cumule près de 10 ans d'expérience
+                        dans de grands groupes de services français :
+                        juriste en droit social, directeur de centre de profit
+                        puis directeur de projets de retournement.
+                    </p>
+
+                    <p>
+                        Pas de rapport théorique.
+                        Des actions terrain avec des résultats mesurables.
+                    </p>
+
+                </div>
+
+                <div class="about-stats">
+
+                    <div class="stat-box">
+                        <div class="stat-num">15</div>
+                        <div class="stat-label">
+                            Établissements redressés
+                        </div>
+                    </div>
+
+                    <div class="stat-box">
+                        <div class="stat-num">10 ans</div>
+                        <div class="stat-label">
+                            D'expérience opérationnelle
+                        </div>
+                    </div>
+
+                    <div class="stat-box">
+                        <div class="stat-num">&lt; 90j</div>
+                        <div class="stat-label">
+                            Pour des résultats visibles
+                        </div>
+                    </div>
+
+                    <div class="stat-box">
+                        <div class="stat-num">100%</div>
+                        <div class="stat-label">
+                            Confidentiel
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="about-right">
+
+                <h3>Pourquoi nous, pas un autre ?</h3>
+
+                <ul>
+                    <li>
+                        Alignement d'intérêts — Phase 2 payée sur résultats
+                    </li>
+
+                    <li>
+                        Discrétion totale — aucun signal extérieur
+                    </li>
+
+                    <li>
+                        Double compétence finance + social
+                    </li>
+
+                    <li>
+                        Intervention rapide — 48h après validation
+                    </li>
+
+                    <li>
+                        Zéro engagement au-delà de 90 jours
+                    </li>
+
+                </ul>
+
+            </div>
+
+        </div>
+
+    </div>
+</section>
+
+</section>
+
     @if($goals->count() > 0)
     <section id="strategy" class="method-section" style="padding: 2rem 0;">
         <div class="container">
-            <div class="text-center mb-3" data-aos="fade-down">
-                <span class="hero-eyebrow text-uppercase">Notre approche</span>
-                <h2 class="section-title mt-2">Notre méthode d'accompagnement</h2>
-                <p class="text-muted mt-3 mx-auto" style="max-width: 600px; font-size: 1.05rem;">
-                    Une approche structurée, transparente et orientée résultats pour transformer votre gestion financière en un véritable levier de croissance.
-                </p>
-            </div>
-
-            <div class="timeline-container">
-                @foreach($goals as $index => $goal)
-                    @php 
-                        $gData = json_decode($goal->content);
-                        // Répartition alternée parfaite : Impairs à gauche (item-odd), Pairs à droite (item-even)
-                        $alignmentClass = ($index % 2 == 0) ? 'item-odd' : 'item-even';
-                    @endphp
-                    <div class="timeline-item {{ $alignmentClass }}" data-aos="fade-up" data-aos-delay="{{ $index * 100 }}">
-                        
-                        <div class="timeline-badge-wrapper">
-                            <div class="timeline-badge">
-                                {{-- Utilisation de $loop->iteration pour garantir la suite stricte 01, 02, 03... --}}
-                                {{ str_pad($loop->iteration, 2, '0', STR_PAD_LEFT) }}
-                            </div>
-                        </div>
-                        
-                        <div class="timeline-card">
-                            <h3>{{ $gData->title }}</h3>
-                            <p>
-                                @if(strpos($gData->description, '<ul') !== false || strpos($gData->description, '<p') !== false)
-                                    {!! $gData->description !!}
-                                @else
-                                    {!! nl2br(e($gData->description)) !!}
-                                @endif
-                            </p>
-                        </div>
-                        
-                    </div>
-                @endforeach
-            </div>
-
             <div class="engagement-banner p-4 p-md-5 text-center text-md-start" data-aos="zoom-in">
                 <div class="row align-items-center">
                     <div class="col-lg-8 mb-4 mb-lg-0">
@@ -962,325 +1519,9 @@
                     </div>
                 </div>
             </div>
-
         </div>
     </section>
     @endif
-
-    <!--SECTION TARIFS : STRUCTURE EN 2 PHASES (AUDIT + ACCOMPAGNEMENT OPÉRATIONNEL) AVEC GRILLE CLAIRE ET HORIZONTALE PAR SEGMENT (TPE / PME / ETI)-->
-    <section class="py-24" id="tarifs">
-        <div class="max-w-6xl mx-auto px-6">
-
-            <div class="text-center mb-16">
-                <span class="inline-block px-4 py-2 rounded-full border border-[#C5973B]/30 text-[#C5973B] text-sm mb-4">
-                    Transparence totale
-                </span>
-
-                <h2 class="text-4xl md:text-5xl font-bold mb-6">
-                    Une rémunération alignée sur vos résultats
-                </h2>
-
-                <p class=" text-lg max-w-3xl mx-auto">
-                    Contrairement aux cabinets de conseil traditionnels, notre modèle repose sur une logique simple :
-                    nous sommes rémunérés pour identifier les leviers de performance puis pour les mettre en œuvre.
-                </p>
-            </div>
-
-            <div class="grid md:grid-cols-3 gap-8 mb-16">
-
-                <div class=" border border-white/10 rounded-2xl p-8">
-                    <div class="text-[#C5973B] font-semibold mb-3">
-                        TPE
-                    </div>
-
-                    <div class="text-3xl font-bold mb-4">
-                        4 500€ à 8 000€
-                    </div>
-
-                    <p class=" mb-6">
-                        Chiffre d'affaires inférieur à 1 M€
-                    </p>
-
-                    <ul class="space-y-3">
-                        <li>✓ Analyse financière complète</li>
-                        <li>✓ Diagnostic de rentabilité</li>
-                        <li>✓ Détection des pertes de marge</li>
-                        <li>✓ Plan d'actions priorisé</li>
-                    </ul>
-                </div>
-
-                <div class="border-2 border-[#C5973B] rounded-2xl p-8 relative">
-
-                    <span class="absolute -top-3 left-1/2 -translate-x-1/2 bg-[#C5973B] text-black px-4 py-1 rounded-full text-sm font-semibold">
-                        Le plus fréquent
-                    </span>
-
-                    <div class=" font-semibold mb-3">
-                        PME
-                    </div>
-
-                    <div class="text-3xl font-bold mb-4 text-w">
-                        8 000€ à 15 000€
-                    </div>
-
-                    <p class="mb-6">
-                        Chiffre d'affaires entre 1 M€ et 10 M€
-                    </p>
-
-                    <ul class="space-y-3 ">
-                        <li>✓ Audit financier détaillé</li>
-                        <li>✓ Audit social et RH</li>
-                        <li>✓ Analyse organisationnelle</li>
-                        <li>✓ Préconisations chiffrées</li>
-                    </ul>
-
-                </div>
-
-                <div class=" border border-white/10 rounded-2xl p-8">
-                    <div class="text-[#C5973B] font-semibold mb-3">
-                        ETI
-                    </div>
-
-                    <div class="text-3xl font-bold mb-4">
-                        15&nbsp;000€ à 40&nbsp;000€
-                    </div>
-
-                    <p class=" mb-6">
-                        Chiffre d'affaires entre 10 M€ et 50 M€
-                    </p>
-
-                    <ul class="space-y-3">
-                        <li>✓ Audit multidisciplinaire</li>
-                        <li>✓ Analyse des risques</li>
-                        <li>✓ Optimisation financière</li>
-                        <li>✓ Plan de retournement complet</li>
-                    </ul>
-                </div>
-
-            </div>
-
-            <div class="bg-gradient-to-r from-[#C5973B]/10 to-transparent border border-[#C5973B]/20 rounded-3xl p-10" style="background: linear-gradient(135deg,rgba(255, 170, 0, 0.36),
-                rgba(228, 164, 36, 0.02));">
-
-                <div class="grid lg:grid-cols-2 gap-10 items-center">
-
-                    <div>
-                        <span class=" font-semibold">
-                            Phase 2 : Accompagnement opérationnel
-                        </span>
-
-                        <h3 class="text-3xl font-bold mt-3 mb-4">
-                            Nous sommes rémunérés uniquement lorsque vous obtenez des résultats.
-                        </h3>
-
-                        <p class="">
-                            Après l'audit, nous intervenons directement sur les actions de redressement,
-                            d'optimisation ou de restructuration. Cette phase ne comporte aucun honoraire fixe.
-                            Notre rémunération est indexée sur les gains réellement obtenus.
-                        </p>
-                    </div>
-
-                    <div class=" rounded-2xl p-8 shadow-lg shadow-black/10">
-                        <div class="space-y-5">
-
-                            <div class="flex justify-between">
-                                <span >Honoraires fixes</span>
-                                <span class="text-red-400 font-semibold">0 €</span>
-                            </div>
-
-                            <div class="flex justify-between">
-                                <span >Engagement initial</span>
-                                <span class="font-semibold">90 jours</span>
-                            </div>
-
-                            <div class="flex justify-between">
-                                <span >Résultats mesurables</span>
-                                <span class="text-green-400 font-semibold">✓ Oui</span>
-                            </div>
-
-                            <div class="flex justify-between">
-                                <span >Alignement d'intérêts</span>
-                                <span class="text-[#C5973B] font-semibold">100%</span>
-                            </div>
-
-                        </div>
-                    </div>
-
-                </div>
-
-            </div>
-
-        </div>
-
-    </section>
-<section class="py-5 py-lg-7">
-
-    <div class="container">
-
-        <div class="row align-items-center g-5">
-
-            <div class="col-lg-7">
-
-                <span
-                    class="text-uppercase fw-semibold small"
-                    style="letter-spacing:2px;color:#C5973B;">
-                    Qui sommes-nous
-                </span>
-
-                <h2
-                    class="display-4 fw-light mt-3 mb-4"
-                    style="line-height:1.15;">
-
-                    Nous intervenons là où la plupart
-                    des cabinets s'arrêtent.
-                </h2>
-
-                <p
-                    class="fs-5 mb-4"
-                    style="line-height:1.9;">
-
-                    Lorsqu'une entreprise fait face à des tensions de trésorerie,
-                    une rentabilité en chute libre ou une situation sociale complexe,
-                    les rapports et les recommandations ne suffisent plus.
-
-                </p>
-
-                <p
-                    class="fs-5"
-                    style="line-height:1.9;">
-
-                    ARMATURE Business accompagne les dirigeants de TPE, PME et ETI
-                    en difficulté ou en phase de transformation.
-                    Notre rôle n'est pas seulement d'identifier les problèmes :
-                    nous participons directement à leur résolution.
-
-                </p>
-
-            </div>
-
-            <div class="col-lg-5">
-
-                <div
-                    class="p-5 rounded-4"
-                    style="
-                    background:#131F32;
-                    border:1px solid rgba(255,255,255,.08);
-                ">
-
-                    <div class="mb-4 pb-4 border-bottom border-secondary border-opacity-25">
-
-                        <div
-                            class="fw-bold mb-2"
-                            style="color:#C5973B;">
-                            Audit
-                        </div>
-
-                        <div
-                            style="color:#94A3B8;">
-                            Identifier précisément ce qui détruit votre rentabilité.
-                        </div>
-
-                    </div>
-
-                    <div class="mb-4 pb-4 border-bottom border-secondary border-opacity-25">
-
-                        <div
-                            class="fw-bold mb-2"
-                            style="color:#C5973B;">
-                            Action
-                        </div>
-
-                        <div
-                            style="color:#94A3B8;">
-                            Intervenir sur les leviers financiers,
-                            sociaux et organisationnels.
-                        </div>
-
-                    </div>
-
-                    <div>
-
-                        <div
-                            class="fw-bold mb-2"
-                            style="color:#C5973B;">
-                            Résultats
-                        </div>
-
-                        <div
-                            style="color:#94A3B8;">
-                            Une rémunération alignée sur les gains obtenus.
-                        </div>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-        </div>
-
-        <div
-            class="mt-5 mt-lg-6 p-5 rounded-4"
-            style="
-            background:linear-gradient(
-                135deg,
-                rgba(255, 170, 0, 0.36),
-                rgba(228, 164, 36, 0.02)
-            );
-            border:1px solid rgba(197,151,59,.15);
-        ">
-
-            <div class="row align-items-center">
-
-                <div class="col-lg-8">
-
-                    <h3
-                        class=" mb-3 fw-light">
-
-                        Nous ne vendons pas du conseil.
-                    </h3>
-
-                    <p
-                        class="mb-0 "
-                        style="font-size:1.05rem;line-height:1.9;">
-
-                        Nous intervenons comme un partenaire opérationnel.
-                        Chaque recommandation est conçue pour être appliquée,
-                        mesurée et produire un impact concret sur la trésorerie,
-                        les coûts, l'organisation ou la rentabilité.
-
-                    </p>
-
-                </div>
-
-                <div class="col-lg-4 text-lg-end mt-4 mt-lg-0">
-
-                    <div
-                        style="
-                        color:#C5973B;
-                        font-size:4rem;
-                        font-weight:300;
-                        line-height:1;
-                    ">
-                        90j
-                    </div>
-
-                    <div
-                        style="margin-top:1rem;color:#94A3B8;">
-
-                        pour enclencher les premiers résultats
-
-                    </div>
-
-                </div>
-
-            </div>
-
-        </div>
-
-    </div>
-
-</section>
 
 
     {{-- 5. TÉMOIGNAGES --}}

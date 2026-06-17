@@ -26,6 +26,8 @@
     <meta name="keywords" content="coach, entreprise, consultant, trésorerie, gestion financière, TPE, PME, optimisation rentabilité, Armature Business">
     <link rel="canonical" href="{{ $currentUrl }}">
 
+    @yield('robots')
+
     {{-- OPEN GRAPH --}}
     <meta property="og:type" content="website">
     <meta property="og:url" content="{{ $currentUrl }}">
@@ -298,10 +300,13 @@
                         <a href="{{ route('home') }}#strategy">Notre méthode</a>
                     </li>
                     <li>
-                        <a href="{{ route('home') }}#tarifs">Tarifs</a>
+                        <a href="{{ route('home') }}#tarifs">Nos tarifs</a>
                     </li>
                     <li>
                         <a href="{{ route('home') }}#testimonials">Témoignages</a>
+                    </li>
+                    <li>
+                        <a href="{{ route('home') }}#about">Qui sommes-nous ?</a>
                     </li>
                     <li>
                         <a href="{{ route('home') }}#faq">FAQ</a>
@@ -330,10 +335,11 @@
 
     {{-- TIROIR MOBILE --}}
     <div class="sidebar-mobile d-lg-none" id="mobileDrawer">
-        <a href="{{ route('home') }}">Vos enjeux</a>
-        <a href="{{ route('home') }}#methode">Notre méthode</a>
-        <a href="{{ route('home') }}#tarifs">Tarifs</a>
-        <a href="{{ route('home') }}#temoignages">Témoignages</a>
+        <a href="{{ route('home') }}#problemes">Vos enjeux</a>
+        <a href="{{ route('home') }}#strategy">Notre méthode</a>
+        <a href="{{ route('home') }}#tarifs">Nos tarifs</a>
+        <a href="{{ route('home') }}#testimonials">Témoignages</a>
+        <a href="{{ route('home') }}#about">Qui sommes-nous ?</a>
         <a href="{{ route('home') }}#faq">FAQ</a>
         <a href="{{ route('blog.index') }}">Actualités</a>
         @if(Route::has('contact'))
@@ -352,7 +358,7 @@
     @include('layouts.footer')
 
     
-    <script>
+     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const menuBtn = document.getElementById('mobileMenuBtn');
             const drawer = document.getElementById('mobileDrawer');
@@ -383,15 +389,10 @@
                 preloader.classList.add('preloader-hidden');
             }
         });
-    
-
     </script>
-    <script>
-        
 
-         {{-- SCRIPTS OPTIMISÉS --}}
+    {{-- Bootstrap Bundle DOIT être une balise séparée, pas dans un autre script --}}
     <script src="{{ asset('js/bootstrap.bundle.min.js') }}"></script>
-        @stack('scripts')
-    </script>
+    @stack('scripts')
 </body>
 </html>

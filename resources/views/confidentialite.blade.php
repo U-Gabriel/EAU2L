@@ -2,6 +2,10 @@
 
 @section('title', 'Confidentialité | Eau2L Digital')
 
+@section('robots')
+    <meta name="robots" content="noindex, follow">
+@endsection
+
 @section('content')
 <div class="bg-[#020617] min-h-screen pt-32 pb-24 px-6 relative overflow-hidden">
     <div class="max-w-4xl mx-auto">

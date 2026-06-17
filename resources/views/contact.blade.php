@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
-@section('title', 'Audit Financier Gratuit - Prendre Rendez-vous')
-@section('meta_description', 'Réservez votre audit financier gratuit de 30 minutes. Choisissez votre créneau pour faire le point sur la trésorerie et la rentabilité de votre TPE/PME.')
+@section('title', 'Audit Financier - Prendre Rendez-vous')
+@section('meta_description', 'Réservez votre audit financier de 30 minutes. Choisissez votre créneau pour faire le point sur la trésorerie et la rentabilité de votre TPE/PME.')
 
 @php
     $theme = DB::table('page_blocks')->where('id_page', 6)->where('type', 'like', 'color_%')->get()->pluck('content', 'type');
