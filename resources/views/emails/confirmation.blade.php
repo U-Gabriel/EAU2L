@@ -20,7 +20,7 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>EAU2L</h1>
+            <h1>Armature Business</h1>
             <p>Expertise & Audit Digital</p>
         </div>
 
@@ -49,15 +49,15 @@
             </p>
 
             <div class="btn-container">
-                <a href="https://teams.live.com/meet/93469201237491?p=WBX9LmrsbYkHqLKMT6" class="btn-teams" style="color: #ffffff !important;">
+                <a href="{{ $teamsUrl }}" class="btn-teams" style="color: #ffffff !important;">
                     Rejoindre la réunion Teams
                 </a>
             </div>
         </div>
 
         <div class="footer">
-            <p>Cet email a été envoyé automatiquement suite à votre réservation sur EAU2L.<br>
-            &copy; 2026 EAU2L. Tous droits réservés.</p>
+            <p>Cet email a été envoyé automatiquement suite à votre réservation sur Armature Business.<br>
+            &copy; 2026 Armature Business. Tous droits réservés.</p>
         </div>
     </div>
 </body>

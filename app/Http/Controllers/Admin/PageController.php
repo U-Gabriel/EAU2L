@@ -21,8 +21,10 @@ class PageController extends Controller
                            ->orderBy('position', 'asc')
                            ->get()
                            ->groupBy('type');
+
+        $teamsBlock = DB::table('page_blocks')->where('type', 'teams_link')->first();
         
-        return view('admin.modifications', compact('page', 'blocks'));
+        return view('admin.modifications', compact('page', 'blocks', 'teamsBlock'));
     }
 
     public function updateBlock(Request $request, $id)
@@ -36,8 +38,25 @@ class PageController extends Controller
         $block->is_hidden = $request->has('is_hidden') ? 1 : 0;
 
         // 2. Mise à jour des textes (JSON)
-        if ($request->has('content_json')) {
+        if ($block->type === 'admin_mail') {
+            // Si c'est le bloc admin_mail, on récupère le tableau ou un tableau vide s'il n'y a plus rien
+            $emails = $request->input('content_json', []);
+            $emails = array_values(array_filter(array_map('trim', $emails))); // Nettoyage
+            
+            $block->content = json_encode($emails, JSON_UNESCAPED_UNICODE);
+        }
+        elseif ($request->has('content_json')) {
             $block->content = json_encode($request->input('content_json'));
+
+            $contentData = $request->input('content_json');
+            
+            // Réindexation des cards si présent dans la requête
+            if (isset($contentData['cards']) && is_array($contentData['cards'])) {
+                $contentData['cards'] = array_values($contentData['cards']);
+            }
+
+            // Sauvegarde en BDD sous forme de JSON valide
+            $block->content = json_encode($contentData, JSON_UNESCAPED_UNICODE);
         }
 
         // 3. Mise à jour du lien (colonne link)
@@ -427,17 +446,18 @@ class PageController extends Controller
     /**
      * AJOUT : Supprime un bloc d'enjeu de la BDD
      */
+
     public function destroyBlock($id)
     {
         $block = PageBlock::findOrFail($id);
         
-        // Sécurité pour être sûr qu'on ne supprime qu'une situation
-        if ($block->type === 'situations') {
+        // On autorise la suppression pour les types 'situations', 'method', etc.
+        if (in_array($block->type, ['situations', 'method', 'methode'])) {
             $block->delete();
-            return redirect()->back()->with('success', 'L\'enjeu a bien été supprimé.');
+            return redirect()->back()->with('success', 'Élément supprimé avec succès.');
         }
 
-        return redirect()->back()->with('error', 'Action non autorisée pour ce type de contenu.');
+        return redirect()->back()->with('error', 'Action non autorisée pour ce type de contenu (type actuel : ' . $block->type . ').');
     }
 
    public function storeGoal(Request $request)
@@ -480,5 +500,75 @@ class PageController extends Controller
         }
 
         return redirect()->back()->with('error', 'Action non autorisée.');
+    }
+
+    public function updateTeamsLink(Request $request)
+    {
+        $request->validate([
+            'teams_url' => 'required|url',
+        ]);
+
+        $page = Page::where('slug', 'home')->first();
+        $idPage = $page ? $page->id_page : 1;
+
+        // Enregistrement / Mise à jour dans la colonne 'link'
+        DB::table('page_blocks')->updateOrInsert(
+            ['type' => 'teams_link'],
+            [
+                'id_page'    => $idPage,
+                'link'       => $request->input('teams_url'), // On enregistre dans la colonne 'link'
+                'is_hidden'  => 0,
+                'updated_at' => now(),
+            ]
+        );
+
+        return redirect()->back()->with('success', 'Le lien Teams a été mis à jour avec succès !');
+    }
+
+    public function storeMethod(Request $request)
+    {
+        $request->validate([
+            'id_page' => 'required',
+            'title'   => 'required|string',
+        ]);
+
+        // On nettoie le tableau des cartes au cas où des éléments vides ont été envoyés
+        $cards = array_values(array_filter($request->input('cards', []), function($card) {
+            return !empty($card['title']) || !empty($card['description']);
+        }));
+
+        $content = [
+            'step'        => $request->input('step', '01'),
+            'title'       => $request->input('title'),
+            'description' => $request->input('description'),
+            'cards'       => $cards, // Le tableau PHP complet
+        ];
+
+        DB::table('page_blocks')->insert([
+            'id_page'  => $request->id_page,
+            'type'     => 'method',
+            'content'  => json_encode($content, JSON_UNESCAPED_UNICODE), // Encodage automatique en JSON
+            'position' => 99,
+        ]);
+
+        return back()->with('success', 'Étape créée avec succès !');
+    }
+
+    public function updateTarifBlock(Request $request, $id)
+    {
+        $block = PageBlock::findOrFail($id);
+        $inputData = $request->input('content_json', []);
+
+        // Si 'definition' arrive sous forme de tableau de lignes séparées (provenant de l'admin)
+        if (isset($inputData['definition']) && is_array($inputData['definition'])) {
+            // On nettoie les lignes vides
+            $inputData['definition'] = array_values(array_filter(array_map('trim', $inputData['definition'])));
+        }
+
+        // Sauvegarde en JSON propre
+        $block->content = json_encode($inputData, JSON_UNESCAPED_UNICODE);
+        $block->save();
+
+        return back()->with('success', 'Mis à jour avec succès !');
     }
 }

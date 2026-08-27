@@ -23,6 +23,10 @@ class HomeController extends Controller
 
         $videoBlock = $page->blocks->where('type', 'video_presentation')->first();
 
+        $methodTitle = $page->blocks->where('type', 'method_title')->first();
+
+        $methods = $page->blocks->where('type', 'method')->sortBy('position');
+
         // On récupère la collection des objectifs (plusieurs possibles)
         $goals = $page->blocks->where('type', 'goals');
         
@@ -34,7 +38,17 @@ class HomeController extends Controller
         // Ajout de la FAQ
         $faqs = $page->blocks->where('type', 'faq')->sortBy('position');
 
-        return view('home', compact('page', 'beforeHome', 'situations', 'videoBlock', 'goals', 'meetGoals', 'testimonials', 'faqs'));
+        // --- BLOCS TARIFS ---
+        $tarifTitle = $page->blocks->where('type', 'tarif_title')->first();
+        $tarifTitleCard01 = $page->blocks->where('type', 'tarif_title_card_01')->first();
+        $tarifCards01 = $page->blocks->where('type', 'tarif_card_01')->sortBy('position');
+        $tarifCard02 = $page->blocks->where('type', 'tarif_card_02')->first();
+
+        $usCompany = $page->blocks->where('type', 'us_company')->first();
+        $detailsCompany = $page->blocks->where('type', 'details_company')->first();
+        $cardCompanies = $page->blocks->where('type', 'card_company')->sortBy('position');
+
+        return view('home', compact('page', 'beforeHome', 'situations', 'videoBlock', 'methodTitle', 'methods', 'goals', 'meetGoals', 'testimonials', 'faqs', 'tarifTitle', 'tarifTitleCard01', 'tarifCards01', 'tarifCard02', 'usCompany', 'detailsCompany', 'cardCompanies'));
     }
 
 }

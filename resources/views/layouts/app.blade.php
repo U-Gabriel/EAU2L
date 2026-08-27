@@ -393,6 +393,7 @@
 
     {{-- Bootstrap Bundle DOIT être une balise séparée, pas dans un autre script --}}
     <script src="{{ asset('js/bootstrap.bundle.min.js') }}"></script>
+    
     @stack('scripts')
 </body>
 </html>

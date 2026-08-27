@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use App\Models\Calender;
 use App\Models\InformationCustomer;
 use Carbon\Carbon;
@@ -172,6 +173,12 @@ class AuditController extends Controller
             $emailBlock = \DB::table('page_blocks')->where('type', 'email_audit_confirmation')->first();
             $messageUser = $emailBlock ? $emailBlock->content : "Bonjour {prenom}, votre rendez-vous est confirmé.";
 
+            // Récupération dynamique du LIEN TEAMS depuis la BDD
+            $teamsBlock = PageBlock::where('type', 'teams_link')->first();
+            $teamsUrl = ($teamsBlock && !empty($teamsBlock->link)) 
+            ? $teamsBlock->link 
+            : 'https://teams.live.com/meet/93469201237491?p=WBX9LmrsbYkHqLKMT6';
+
             // 2. On prépare les variables
             $vars = [
                 '{prenom}'     => $info->prenom,
@@ -179,7 +186,7 @@ class AuditController extends Controller
                 '{societe}'    => $info->company_name,
                 '{date}'       => \Carbon\Carbon::parse($info->meeting_date)->format('d/m/Y'),
                 '{heure}'      => $info->meeting_hour,
-                '{link_teams}' => 'https://teams.live.com/meet/93469201237491?p=WBX9LmrsbYkHqLKMT6'
+                '{link_teams}' => $teamsUrl
             ];
 
             // 3. On remplace les balises dans le texte de l'utilisateur
@@ -191,7 +198,7 @@ class AuditController extends Controller
                 <div style="max-width: 600px; margin: 0 auto; background: #ffffff; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.05); border: 1px solid #e2e8f0;">
                     
                     <div style="background-color: #ffffff; padding: 30px; text-align: center; border-bottom: 4px solid #1e3a8a;">
-                        <img src="http://37.187.183.97//images/logo_fix_tr.png" alt="Armature Business" style="max-height: 60px; width: auto; margin-bottom: 10px;">
+                        <img src="http://37.187.183.97//images/logo_mobile_compact_1779997974.png" alt="Armature Business" style="max-height: 60px; width: auto; margin-bottom: 10px;">
                         <div style="color: #1e3a8a; font-size: 14px; font-weight: bold; letter-spacing: 2px; text-transform: uppercase;">Armature Business</div>
                     </div>
 
@@ -221,6 +228,29 @@ class AuditController extends Controller
             \Mail::html($finalHtml, function ($message) use ($info) {
                 $message->to($info->email)->subject('Confirmation de votre Audit');
             });
+
+            // --- B. ENVOI DU MAIL DE NOTIFICATION À L'ADMINISTRATEUR ---
+            // (En utilisant la classe Mailable "AdminNewRendezVous" créée précédemment)
+            $adminBlock = \App\Models\PageBlock::where('type', 'admin_mail')->first();
+            
+            if ($adminBlock && !empty($adminBlock->content)) {
+                // Si le contenu est stocké sous forme de JSON (tableau) ou de texte brut
+                $adminEmails = json_decode($adminBlock->content, true);
+                
+                // Si ce n'est pas un tableau valide, on traite le contenu comme une chaîne (ou un email unique / séparé par des virgules)
+                if (!is_array($adminEmails)) {
+                    // Nettoyage au cas où il y a plusieurs emails séparés par des virgules
+                    $adminEmails = array_map('trim', explode(',', $adminBlock->content));
+                }
+
+                // Envoi à tous les administrateurs enregistrés
+                try {
+                    \Mail::to($adminEmails)->send(new \App\Mail\AdminNewRendezVous($info, $teamsUrl));
+                } catch (\Exception $ex) {
+                    \Log::error("Erreur envoi mail admin: " . $ex->getMessage());
+                }
+            }
+
 
             return response()->json([
                 'success' => true, 
@@ -274,6 +304,24 @@ class AuditController extends Controller
         $block->save();
 
         return redirect()->back()->with('success', 'Le bloc #' . $id . ' a été mis à jour avec succès.');
+    }
+
+    public function updateTeamsLink(Request $request)
+    {
+        $request->validate([
+            'teams_url' => 'required|url',
+        ]);
+
+        // On met à jour ou on crée le bloc 'teams_meeting_link' dans page_blocks
+        DB::table('page_blocks')->updateOrInsert(
+            ['type' => 'teams_link'],
+            [
+                'link' => $request->input('teams_url'),
+                'updated_at' => now(),
+            ]
+        );
+
+        return redirect()->back()->with('success', 'Le lien Teams a été mis à jour avec succès !');
     }
 
     

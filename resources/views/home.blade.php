@@ -1087,7 +1087,7 @@
                         <a href="{{ $data->button_primary_link ?? route('contact') }}" class="btn-primary-gold">
                             {{ $data->button_primary_text ?? 'Prendre un rendez-vous gratuit' }} <i class="bi bi-arrow-right"></i>
                         </a>
-                        <a href="#methode" class="btn-outline-white">
+                        <a href="#strategy" class="btn-outline-white">
                             {{ $data->button_secondary_text ?? 'Découvrir notre méthode' }}
                         </a>
                     </div>
@@ -1186,138 +1186,145 @@
 
 
     {{-- ============================================================== --}}
-    {{-- NOUVELLE SECTION : NOTRE MÉTHODE (Issue de la maquette HTML) --}}
+    {{-- SECTION DYNAMIQUE : NOTRE MÉTHODE                              --}}
     {{-- ============================================================== --}}
+    @if(isset($methods) && $methods->count() > 0)
+        @php
+            $mTitleData = isset($methodTitle) ? json_decode($methodTitle->content) : null;
+        @endphp
+
     <section class="new-method-section" id="strategy">
         <div class="container">
             <div class="new-method-label text-center text-lg-start">Notre méthode</div>
-            <h2 class="section-title text-center text-lg-start">3 étapes. 90 jours. Des résultats mesurables.</h2>
+            
+            {{-- Titre dynamique avec valeur par défaut --}}
+            <h2 class="section-title text-center text-lg-start">
+                {{ $mTitleData->title ?? '3 étapes. 90 jours. Des résultats mesurables.' }}
+            </h2>
+
+            {{-- Sous-titre dynamique avec valeur par défaut --}}
             <p class="text-muted text-center text-lg-start mx-auto mx-lg-0" style="font-size: 1.05rem; max-width: 600px; line-height: 1.65;">
-                Une approche structurée, calibrée pour les dirigeants qui veulent agir — pas attendre.
+                {{ $mTitleData->description ?? 'Une approche structurée, calibrée pour les dirigeants qui veulent agir — pas attendre.' }}
             </p>
 
             <div class="steps-container">
-                <div class="step-row" data-aos="fade-up">
-                    <div class="step-num-col">
-                        <div class="step-num">01</div>
-                        <div class="step-line"></div>
-                    </div>
-                    <div class="step-content">
-                        <h3 style="font-family: 'DM Serif Display', Georgia, serif; font-size: 1.35rem; color: var(--text-dark); margin-bottom: 12px;">Rendez-vous découverte</h3>
-                        <p style="color: var(--text-muted); font-size: 0.95rem; max-width: 580px;">Échange de 30 minutes, en ligne ou en présentiel. On analyse votre situation : tensions de trésorerie, baisse de marge, pression sociale ou organisationnelle. À l'issue, nous définissons ensemble si un audit est pertinent — et lequel.</p>
-                        <p style="margin-top:10px; color: var(--primary-gold); font-weight: 600; font-size: 0.88rem;">Gratuit · Sans engagement · Confidentiel</p>
-                    </div>
-                </div>
+                @foreach($methods as $index => $block)
+                    @php 
+                        $m = json_decode($block->content); 
+                    @endphp
+                    
+                    <div class="step-row" data-aos="fade-up" data-aos-delay="{{ $loop->index * 100 }}">
+                        <div class="step-num-col">
+                            <div class="step-num">{{ $m->step ?? sprintf('%02d', $loop->iteration) }}</div>
+                            <div class="step-line"></div>
+                        </div>
+                        <div class="step-content">
+                            <h3 style="font-family: 'DM Serif Display', Georgia, serif; font-size: 1.35rem; color: var(--text-dark); margin-bottom: 12px;">
+                                {{ $m->title ?? '' }}
+                            </h3>
+                            
+                            <p style="color: var(--text-muted); font-size: 0.95rem; max-width: 580px;">
+                                {!! $m->description ?? '' !!}
+                            </p>
 
-                <div class="step-row" data-aos="fade-up" data-aos-delay="100">
-                    <div class="step-num-col">
-                        <div class="step-num">02</div>
-                        <div class="step-line"></div>
-                    </div>
-                    <div class="step-content">
-                        <h3 style="font-family: 'DM Serif Display', Georgia, serif; font-size: 1.35rem; color: var(--text-dark); margin-bottom: 12px;">Audit — Phase 1</h3>
-                        <p style="color: var(--text-muted); font-size: 0.95rem; max-width: 580px;">Diagnostic financier, social et organisationnel complet avec préconisations chiffrées. Tarif indexé à la taille de votre entreprise.</p>
-                        
-                        <div class="expertise-grid">
-                            <div class="expertise-card">
-                                <h4>Audit financier & comptable</h4>
-                                <p>Diagnostic de rentabilité, analyse des coûts, détection des fuites de marge, tableaux de bord de pilotage.</p>
-                            </div>
-                            <div class="expertise-card">
-                                <h4>Audit social & RH</h4>
-                                <p>Conformité URSSAF, optimisation masse salariale, accompagnement juridique, plans de restructuration.</p>
-                            </div>
-                            <div class="expertise-card">
-                                <h4>Accompagnement opérationnel</h4>
-                                <p>Réduction des coûts, modernisation des process, recouvrement de créances, négociations fournisseurs.</p>
-                            </div>
-                            <div class="expertise-card">
-                                <h4>Redressement & retournement</h4>
-                                <p>Plan de retournement structuré, stabilisation de trésorerie, restauration de la rentabilité.</p>
-                            </div>
+                            @php
+                                $cardsList = is_string($m->cards ?? null) ? json_decode($m->cards, true) : ($m->cards ?? []);
+                            @endphp
+
+                            @if(!empty($cardsList) && is_array($cardsList) && count($cardsList) > 0)
+                                <div class="expertise-grid">
+                                    @foreach($cardsList as $card)
+                                        @php $card = (object) $card; @endphp
+                                        <div class="expertise-card">
+                                            <h4>{{ $card->title ?? '' }}</h4>
+                                            <p>{{ $card->description ?? '' }}</p>
+                                        </div>
+                                    @endforeach
+                                </div>
+                            @endif
+
+                            {{-- Texte/note sous l'étape --}}
+                            @if(!empty($m->details))
+                                <p style="margin-top: 12px; color: {{ $loop->first ? 'var(--primary-gold)' : 'var(--text-gray-hero)' }}; font-size: {{ $loop->first ? '0.88rem' : '0.92rem' }}; font-weight: {{ $loop->first ? '600' : 'normal' }};">
+                                    {!! $m->details !!}
+                                </p>
+                            @endif
                         </div>
                     </div>
-                </div>
-
-                <div class="step-row" data-aos="fade-up" data-aos-delay="200">
-                    <div class="step-num-col">
-                        <div class="step-num">03</div>
-                    </div>
-                    <div class="step-content">
-                        <h3 style="font-family: 'DM Serif Display', Georgia, serif; font-size: 1.35rem; color: var(--text-dark); margin-bottom: 12px;">Accompagnement opérationnel — Phase 2</h3>
-                        <p style="color: var(--text-muted); font-size: 0.95rem; max-width: 580px;">Mise en œuvre des recommandations pendant 90 jours minimum. Rémunérée <strong>uniquement sur les résultats obtenus</strong> chaque mois. Zéro honoraire fixe sur cette phase.</p>
-                        <p style="margin-top:12px; color: var(--text-gray-hero); font-size: 0.92rem;">Contrairement à un administrateur judiciaire, nous intervenons en toute discrétion — vos clients, fournisseurs et salariés ne sont pas informés.</p>
-                    </div>
-                </div>
+                @endforeach
             </div>
         </div>
     </section>
+    @endif
+    
 <section class="tarifs-section" id="tarifs">
     <div class="container">
-        <div class="text-center text-lg-start mb-5" data-aos="fade-down">
-            <span class="section-label">Transparence</span>
-            <h2 class="section-title font-normal mt-2 mb-3">Nos tarifs</h2>
-            <p class="section-subtitle mx-auto mx-lg-0">Pas de devis opaque. Vous savez exactement ce que vous payez, à chaque étape.</p>
-        </div>
+        {{-- TITRE GLOBAL DE LA SECTION --}}
+        @if($tarifTitle)
+            @php $tContent = json_decode($tarifTitle->content, true); @endphp
+            <div class="text-center text-lg-start mb-5" data-aos="fade-down">
+                <span class="section-label">{{ $tContent['label'] ?? 'Transparence' }}</span>
+                <h2 class="section-title font-normal mt-2 mb-3">{{ $tContent['title'] ?? 'Nos tarifs' }}</h2>
+                <p class="section-subtitle mx-auto mx-lg-0">{{ $tContent['description'] ?? '' }}</p>
+            </div>
+        @endif
 
+        {{-- PHASE 01 --}}
         <div class="phase-container mb-5" data-aos="fade-up">
-            <div class="phase-header-block">
-                <div class="phase-badge">Phase 01</div>
-                <h3 class="phase-title">Diagnostic & Audit Stratégique</h3>
-                <p class="phase-subtitle">Analyse approfondie et préconisations chiffrées. Tarif fixe selon la taille de votre structure.</p>
-            </div>
+            @if($tarifTitleCard01)
+                @php $p1Content = json_decode($tarifTitleCard01->content, true); @endphp
+                <div class="phase-header-block">
+                    <div class="phase-badge">{{ $p1Content['badge'] ?? 'Phase 01' }}</div>
+                    <h3 class="phase-title">{{ $p1Content['title'] ?? '' }}</h3>
+                    <p class="phase-subtitle">{{ $p1Content['subtitle'] ?? '' }}</p>
+                </div>
+            @endif
 
+            {{-- LES 3 CARTES TARIFS (TPE, PME, ETI) --}}
             <div class="tarifs-grid mt-4">
-                <div class="tarif-card">
-                    <h4>Audit · TPE</h4>
-                    <div class="tarif-price">4&nbsp;500 – 8&nbsp;000&nbsp;€ <span>HT</span></div>
-                    <div class="tarif-desc">Chiffre d'affaires inférieur à 1 M€</div>
-                    <ul class="tarif-list">
-                        <li>Analyse financière complète</li>
-                        <li>Diagnostic de rentabilité</li>
-                        <li>Détection des pertes de marge</li>
-                        <li>Plan d'actions priorisé</li>
-                    </ul>
-                </div>
-
-                <div class="tarif-card featured">
-                    <div class="tarif-badge">Le plus fréquent</div>
-                    <h4>Audit · PME</h4>
-                    <div class="tarif-price">8&nbsp;000 – 15&nbsp;000&nbsp;€ <span>HT</span></div>
-                    <div class="tarif-desc">Chiffre d'affaires entre 1 M€ et 10 M€</div>
-                    <ul class="tarif-list">
-                        <li>Audit financier détaillé</li>
-                        <li>Audit social et RH</li>
-                        <li>Analyse organisationnelle</li>
-                        <li>Préconisations chiffrées</li>
-                    </ul>
-                </div>
-
-                <div class="tarif-card">
-                    <h4>Audit · ETI</h4>
-                    <div class="tarif-price">15&nbsp;000 – 40&nbsp;000&nbsp;€ <span>HT</span></div>
-                    <div class="tarif-desc">Chiffre d'affaires entre 10 M€ et 50 M€</div>
-                    <ul class="tarif-list">
-                        <li>Audit multidisciplinaire</li>
-                        <li>Analyse des risques</li>
-                        <li>Optimisation financière</li>
-                        <li>Plan de retournement complet</li>
-                    </ul>
-                </div>
+                @foreach($tarifCards01 as $card)
+                    @php 
+                        $cData = json_decode($card->content, true); 
+                        $isBest = !empty($cData['is_best']);
+                    @endphp
+                    <div class="tarif-card {{ $isBest ? 'featured' : '' }}">
+                        @if($isBest)
+                            <div class="tarif-badge">Le plus fréquent</div>
+                        @endif
+                        <h4>{{ $cData['title'] ?? '' }}</h4>
+                        <div class="tarif-price">
+                            {!! $cData['price'] ?? '' !!} <span>{!! $cData['currency'] ?? 'HT' !!}</span>
+                        </div>
+                        <div class="tarif-desc">{{ $cData['description'] ?? '' }}</div>
+                        
+                        @if(isset($cData['definition']) && is_array($cData['definition']))
+                            <ul class="tarif-list">
+                                @foreach($cData['definition'] as $item)
+                                    <li>{{ $item }}</li>
+                                @endforeach
+                            </ul>
+                        @endif
+                    </div>
+                @endforeach
             </div>
         </div>
 
-        <div class="phase-container" data-aos="fade-up" data-aos-delay="100">
-            <div class="phase-header-block">
-                <div class="phase-badge badge-gold">Phase 02</div>
-                <h3 class="phase-title">Accompagnement Opérationnel</h3>
-                <div class="phase-price-highlight">Rémunéré uniquement sur résultats</div>
-                <p class="phase-subtitle max-w-720">
-                    Aucun honoraire fixe. Le pourcentage est défini contractuellement à l'issue de l'audit. 
-                    Engagement initial de 90 jours, résiliable ensuite par simple e-mail, sans préavis ni pénalité.
-                </p>
+        {{-- PHASE 02 --}}
+        @if($tarifCard02)
+            @php $p2Content = json_decode($tarifCard02->content, true); @endphp
+            <div class="phase-container" data-aos="fade-up" data-aos-delay="100">
+                <div class="phase-header-block">
+                    <div class="phase-badge badge-gold">{{ $p2Content['badge'] ?? 'Phase 02' }}</div>
+                    <h3 class="phase-title">{{ $p2Content['title'] ?? '' }}</h3>
+                    @if(!empty($p2Content['highlight']))
+                        <div class="phase-price-highlight">{{ $p2Content['highlight'] }}</div>
+                    @endif
+                    <p class="phase-subtitle max-w-720">
+                        {{ $p2Content['subtitle'] ?? '' }}
+                    </p>
+                </div>
             </div>
-        </div>
+        @endif
     </div>
 </section>
 
@@ -1397,104 +1404,62 @@
         gap: 24px;
     }
 </style>
-  <section class="section" id="about">
+ @php
+    $usData = $usCompany ? json_decode($usCompany->content, true) : [];
+    $detailsData = $detailsCompany ? json_decode($detailsCompany->content, true) : [];
+@endphp
+
+<section class="section" id="about">
     <div class="container">
 
         <div class="section-label">
-            Qui sommes-nous
+            {{ $usData['label'] ?? 'Qui sommes-nous' }}
         </div>
 
         <h2 class="section-title">
-            Un cabinet fondé par un praticien du redressement
+            {{ $usData['title'] ?? '' }}
         </h2>
 
         <div class="about-layout">
 
             <div>
-
                 <div class="about-text">
-
-                    <p>
-                        ARMATURE Business accompagne les dirigeants de TPE,
-                        PME et ETI en Île-de-France confrontés à des difficultés
-                        financières, sociales ou organisationnelles.
-                    </p>
-
-                    <p>
-                        Notre fondateur cumule près de 10 ans d'expérience
-                        dans de grands groupes de services français :
-                        juriste en droit social, directeur de centre de profit
-                        puis directeur de projets de retournement.
-                    </p>
-
-                    <p>
-                        Pas de rapport théorique.
-                        Des actions terrain avec des résultats mesurables.
-                    </p>
-
+                    @if(isset($usData['description']))
+                        @foreach(is_array($usData['description']) ? $usData['description'] : [$usData['description']] as $paragraph)
+                            <p>{{ $paragraph }}</p>
+                        @endforeach
+                    @endif
                 </div>
 
                 <div class="about-stats">
-
-                    <div class="stat-box">
-                        <div class="stat-num">15</div>
-                        <div class="stat-label">
-                            Établissements redressés
+                    @foreach($cardCompanies as $cardBlock)
+                        @php $cardData = json_decode($cardBlock->content, true); @endphp
+                        <div class="stat-box">
+                            <div class="stat-num">{!! $cardData['title'] ?? '' !!}</div>
+                            <div class="stat-label">
+                                @if(isset($cardData['description']) && is_array($cardData['description']))
+                                    @foreach($cardData['description'] as $descLine)
+                                        {{ $descLine }}<br>
+                                    @endforeach
+                                @else
+                                    {{ $cardData['description'] ?? '' }}
+                                @endif
+                            </div>
                         </div>
-                    </div>
-
-                    <div class="stat-box">
-                        <div class="stat-num">10 ans</div>
-                        <div class="stat-label">
-                            D'expérience opérationnelle
-                        </div>
-                    </div>
-
-                    <div class="stat-box">
-                        <div class="stat-num">&lt; 90j</div>
-                        <div class="stat-label">
-                            Pour des résultats visibles
-                        </div>
-                    </div>
-
-                    <div class="stat-box">
-                        <div class="stat-num">100%</div>
-                        <div class="stat-label">
-                            Confidentiel
-                        </div>
-                    </div>
-
+                    @endforeach
                 </div>
-
             </div>
 
             <div class="about-right">
-
-                <h3>Pourquoi nous, pas un autre ?</h3>
+                <h3>{{ $detailsData['title'] ?? 'Pourquoi nous, pas un autre ?' }}</h3>
 
                 <ul>
-                    <li>
-                        Alignement d'intérêts — Phase 2 payée sur résultats
-                    </li>
-
-                    <li>
-                        Discrétion totale — aucun signal extérieur
-                    </li>
-
-                    <li>
-                        Double compétence finance + social
-                    </li>
-
-                    <li>
-                        Intervention rapide — 48h après validation
-                    </li>
-
-                    <li>
-                        Zéro engagement au-delà de 90 jours
-                    </li>
-
+                    @if(isset($detailsData['description']) && is_array($detailsData['description']))
+                        @foreach($detailsData['description'] as $item)
+                            <li>{{ $item }}</li>
+                        @endforeach
+                    @endif
                 </ul>
-
             </div>
 
         </div>

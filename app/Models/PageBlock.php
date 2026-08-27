@@ -12,7 +12,7 @@ class PageBlock extends Model
     protected $primaryKey = 'id_block';
 
     protected $fillable = [
-        'id_page', 'type', 'content', 'image_path', 'position', 'is_active', 'is_hidden',
+        'id_page', 'type', 'content', 'image_path', 'position', 'is_active', 'is_hidden','link', 'video_path',
     ];
 
     // Relation inverse vers Page
